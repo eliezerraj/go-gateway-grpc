@@ -45,20 +45,17 @@ type MessageRouter struct {
 }
 
 type Payment struct {
-	ID				int			`json:"id,omitempty"`
-	FkCardID		int			`json:"fk_card_id,omitempty"`
 	CardNumber		string		`json:"card_number,omitempty"`
-	FkTerminalId	int			`json:"fk_terminal_id,omitempty"`
-	TerminalName	string		`json:"terminal_name,omitempty"`
+	TokenData		string  	`json:"token_data,omitempty"`
+	Terminal		string		`json:"terminal,omitempty"`
 	CardType		string  	`json:"card_type,omitempty"`
 	CardMode		string  	`json:"card_model,omitempty"`
-	PaymentAt		time.Time	`json:"payment_at,omitempty"`
-	MCC				string  	`json:"mcc,omitempty"`
+	Mcc				string  	`json:"mcc,omitempty"`
 	Status			string  	`json:"status,omitempty"`
 	Currency		string  	`json:"currency,omitempty"`
 	Amount			float64 	`json:"amount,omitempty"`
-	CreateAt		time.Time 	`json:"create_at,omitempty"`
-	UpdateAt		*time.Time 	`json:"update_at,omitempty"`
+	PaymentAt		time.Time	`json:"payment_at,omitempty"`
+	TransactionID	*string  	`json:"transaction_id,omitempty"`
 	TenantID		string  	`json:"tenant_id,omitempty"`
 }
 
@@ -67,12 +64,13 @@ type Card struct {
 	FkAccountID		int			`json:"fk_account_id,omitempty"`
 	AccountID		string		`json:"account_id,omitempty"`
 	CardNumber		string  	`json:"card_number,omitempty"`
+	TokenData		string  	`json:"token_data,omitempty"`
 	Type			string  	`json:"card_type,omitempty"`
 	Model			string  	`json:"card_model,omitempty"`
 	Pin				string  	`json:"card_pin,omitempty"`
 	Status			string  	`json:"status,omitempty"`
-	ExpireAt		time.Time 	`json:"expire_at,omitempty"`
-	CreateAt		time.Time 	`json:"create_at,omitempty"`
-	UpdateAt		*time.Time 	`json:"update_at,omitempty"`
+	ExpiredAt		time.Time 	`json:"expired_at,omitempty"`
+	CreatedAt		time.Time 	`json:"created_at,omitempty"`
+	UpdatedAt		*time.Time 	`json:"updated_at,omitempty"`
 	TenantID		string  	`json:"tenant_id,omitempty"`
 }

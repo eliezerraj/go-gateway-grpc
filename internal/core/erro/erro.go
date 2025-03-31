@@ -2,6 +2,8 @@ package erro
 
 import (
 	"errors"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var (
@@ -17,4 +19,6 @@ var (
 	ErrInvalid			= errors.New("invalid data")
 	ErrCardTypeInvalid	= errors.New("card type invalid")
 	ErrGRPCConnection	= errors.New("erro connection to grpc server")
+
+	MissingData 	= status.Errorf(codes.InvalidArgument, "header missing metadata")
 )

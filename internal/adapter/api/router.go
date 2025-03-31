@@ -10,6 +10,7 @@ import (
 	"github.com/go-gateway-grpc/internal/core/erro"
 
 	"github.com/eliezerraj/go-core/coreJson"
+	"github.com/gorilla/mux"
 
 	go_core_observ "github.com/eliezerraj/go-core/observability"
 )
@@ -53,22 +54,22 @@ func (h *HttpRouters) Header(rw http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(rw).Encode(req.Header)
 }
 
-// About add payment
-func (h *HttpRouters) AddPayment(rw http.ResponseWriter, req *http.Request) error {
-	childLogger.Info().Str("func","AddPayment").Interface("trace-resquest-id", req.Context().Value("trace-request-id")).Send()
+// About create a token from card
+func (h *HttpRouters) CreateCardToken(rw http.ResponseWriter, req *http.Request) error {
+	childLogger.Info().Str("func","CreateCardToken").Interface("trace-resquest-id", req.Context().Value("trace-request-id")).Send()
 
-	span := tracerProvider.Span(req.Context(), "adapter.api.AddPayment")
+	span := tracerProvider.Span(req.Context(), "adapter.api.CreateCardToken")
 	defer span.End()
 
-	payment := model.Payment{}
-	err := json.NewDecoder(req.Body).Decode(&payment)
+	card := model.Card{}
+	err := json.NewDecoder(req.Body).Decode(&card)
     if err != nil {
 		core_apiError = core_apiError.NewAPIError(err, http.StatusBadRequest)
 		return &core_apiError
     }
 	defer req.Body.Close()
 
-	res, err := h.workerService.AddPayment(req.Context(), &payment)
+	res, err := h.workerService.CreateCardToken(req.Context(), card)
 	if err != nil {
 		switch err {
 		case erro.ErrNotFound:
@@ -92,6 +93,61 @@ func (h *HttpRouters) GetInfoPodGrpc(rw http.ResponseWriter, req *http.Request) 
 
 	// GetInfoPodGrpc service
 	res, err := h.workerService.GetInfoPodGrpc(req.Context())
+	if err != nil {
+		switch err {
+		case erro.ErrNotFound:
+			core_apiError = core_apiError.NewAPIError(err, http.StatusNotFound)
+		default:
+			core_apiError = core_apiError.NewAPIError(err, http.StatusInternalServerError)
+		}
+		return &core_apiError
+	}
+	
+	return core_json.WriteJSON(rw, http.StatusOK, res)
+}
+
+// About get a card info from token
+func (h *HttpRouters) GetCardToken(rw http.ResponseWriter, req *http.Request) error {
+	childLogger.Info().Str("func","GetCardToken").Interface("trace-resquest-id", req.Context().Value("trace-request-id")).Send()
+
+	span := tracerProvider.Span(req.Context(), "adapter.api.GetCardToken")
+	defer span.End()
+
+	// Parameter
+	vars := mux.Vars(req)
+	card := model.Card{}
+	card.TokenData = vars["id"]
+
+	res, err := h.workerService.GetCardToken(req.Context(), card)
+	if err != nil {
+		switch err {
+		case erro.ErrNotFound:
+			core_apiError = core_apiError.NewAPIError(err, http.StatusNotFound)
+		default:
+			core_apiError = core_apiError.NewAPIError(err, http.StatusInternalServerError)
+		}
+		return &core_apiError
+	}
+	
+	return core_json.WriteJSON(rw, http.StatusOK, res)
+}
+
+// About add payment via token
+func (h *HttpRouters) AddPaymentToken(rw http.ResponseWriter, req *http.Request) error {
+	childLogger.Info().Str("func","AddPayment").Interface("trace-resquest-id", req.Context().Value("trace-request-id")).Send()
+
+	span := tracerProvider.Span(req.Context(), "adapter.api.AddPaymentToken")
+	defer span.End()
+
+	payment := model.Payment{}
+	err := json.NewDecoder(req.Body).Decode(&payment)
+    if err != nil {
+		core_apiError = core_apiError.NewAPIError(err, http.StatusBadRequest)
+		return &core_apiError
+    }
+	defer req.Body.Close()
+
+	res, err := h.workerService.AddPaymentToken(req.Context(), payment)
 	if err != nil {
 		switch err {
 		case erro.ErrNotFound:

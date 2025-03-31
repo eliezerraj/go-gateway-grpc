@@ -95,17 +95,21 @@ func (h HttpServer) StartHttpAppServer(	ctx context.Context,
 		json.NewEncoder(rw).Encode(appServer)
 	})
 	
-	addPayment := myRouter.Methods(http.MethodPost, http.MethodOptions).Subrouter()
-	addPayment.HandleFunc("/payment", core_middleware.MiddleWareErrorHandler(httpRouters.AddPayment))		
-	addPayment.Use(otelmux.Middleware("go-payment"))
+	addCardToken := myRouter.Methods(http.MethodPost, http.MethodOptions).Subrouter()
+	addCardToken.HandleFunc("/cardToken", core_middleware.MiddleWareErrorHandler(httpRouters.CreateCardToken))		
+	addCardToken.Use(otelmux.Middleware("go-gateway-grpc"))
 
-	/*getPayment := myRouter.Methods(http.MethodGet, http.MethodOptions).Subrouter()
-	getPayment.HandleFunc("/get/{id}", core_middleware.MiddleWareErrorHandler(httpRouters.GetPayment))		
-	getPayment.Use(otelmux.Middleware("go-payment"))I*/
+	getCardToken := myRouter.Methods(http.MethodGet, http.MethodOptions).Subrouter()
+	getCardToken.HandleFunc("/get/{id}", core_middleware.MiddleWareErrorHandler(httpRouters.GetCardToken))		
+	getCardToken.Use(otelmux.Middleware("go-gateway-grpc"))
 
 	getInfoPodGrpc := myRouter.Methods(http.MethodGet, http.MethodOptions).Subrouter()
 	getInfoPodGrpc.HandleFunc("/infoPodGrpc", core_middleware.MiddleWareErrorHandler(httpRouters.GetInfoPodGrpc))		
-	getInfoPodGrpc.Use(otelmux.Middleware("go-payment"))
+	getInfoPodGrpc.Use(otelmux.Middleware("go-gateway-grpc"))
+
+	addPaymentToken := myRouter.Methods(http.MethodPost, http.MethodOptions).Subrouter()
+	addPaymentToken.HandleFunc("/paymentToken", core_middleware.MiddleWareErrorHandler(httpRouters.AddPaymentToken))		
+	addPaymentToken.Use(otelmux.Middleware("go-gateway-grpc"))
 
 	// setup http server
 	srv := http.Server{
