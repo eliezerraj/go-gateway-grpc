@@ -4,9 +4,6 @@ import (
 	"context"
 	"errors"
 	
-	"github.com/go-gateway-grpc/internal/core/model"
-	"github.com/go-gateway-grpc/internal/core/erro"
-
 	go_core_observ "github.com/eliezerraj/go-core/observability"
 	go_core_pg "github.com/eliezerraj/go-core/database/pg"
 
@@ -28,65 +25,6 @@ func NewWorkerRepository(databasePGServer *go_core_pg.DatabasePGServer) *WorkerR
 	return &WorkerRepository{
 		DatabasePGServer: databasePGServer,
 	}
-}
-
-// About get card
-func (w *WorkerRepository) GetCard(ctx context.Context, card model.Card) (*model.Card, error){
-	childLogger.Info().Str("func","GetCard").Interface("trace-resquest-id", ctx.Value("trace-request-id")).Send()
-	
-	// Trace
-	span := tracerProvider.Span(ctx, "database.GetCard")
-	defer span.End()
-
-	// Get connection
-	conn, err := w.DatabasePGServer.Acquire(ctx)
-	if err != nil {
-		return nil, errors.New(err.Error())
-	}
-	defer w.DatabasePGServer.Release(conn)
-
-	// prepare
-	res_card := model.Card{}
-
-	// query and execute
-	query :=  `SELECT 	c.id, 
-						c.fk_account_id,
-						a.account_id, 
-						c.card_number, 
-						c.card_type, 
-						c.card_model, 
-						c.card_pin, 
-						c.status, 
-						c.tenant_id
-				FROM card c,
-					account a 
-				WHERE c.card_number = $1
-				and a.id = c.fk_account_id`
-
-	rows, err := conn.Query(ctx, query, card.CardNumber)
-	if err != nil {
-		return nil, errors.New(err.Error())
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		err := rows.Scan( 	&res_card.ID, 
-							&res_card.FkAccountID, 
-							&res_card.AccountID,
-							&res_card.CardNumber, 
-							&res_card.Type, 
-							&res_card.Model,
-							&res_card.Pin,
-							&res_card.Status,
-							&res_card.TenantID,
-		)
-		if err != nil {
-			return nil, errors.New(err.Error())
-        }
-		return &res_card, nil
-	}
-	
-	return nil, erro.ErrNotFound
 }
 
 // About get a transacion UUID

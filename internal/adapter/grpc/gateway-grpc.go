@@ -83,107 +83,6 @@ func (a *AdapaterGrpc) GetInfoPodGrpc(ctx context.Context) (*model.InfoPod, erro
 	return &infoPod, nil
 }
 
-// About send the data to grpc server tokenization to create a card
-func (a *AdapaterGrpc) CreateCardTokenGrpc(ctx context.Context, card model.Card) (*model.Card, error){
-	childLogger.Info().Str("func","CreateCardTokenGrpc").Interface("trace-request-id", ctx.Value("trace-request-id")).Interface("card",card).Send()
-
-	// Trace
-	span := tracerProvider.Span(ctx, "adapter.CreateCardTokenGrpc")
-	defer span.End()
-		
-	// Prepare to receive proto data
-	cardProto := proto.Card{Id: uint32(card.ID),
-							CardNumber: card.CardNumber}
-	cardTokenRequest := &proto.CardTokenRequest{Card: &cardProto}
-
-	// Set header for observability
-	header := metadata.New(map[string]string{ "trace-request-id": fmt.Sprintf("%s",ctx.Value("trace-request-id")) })
-	ctx = metadata.NewOutgoingContext(ctx, header)
-
-	// request the data from grpc
-	res_cardTokenResponse, err := a.serviceClient.CreateCardToken(ctx, cardTokenRequest)
-	if err != nil {
-	  	return nil, err
-	}
-
-	// convert proto to json
-	response_str, err := a.grpcClientWorker.ProtoToJSON(res_cardTokenResponse)
-	if err != nil {
-		return nil, err
-  	}
-		  
-	// convert json to struct
-	var res_protoJson map[string]interface{}
-	err = json.Unmarshal([]byte(response_str), &res_protoJson)
-	if err != nil {
-		return nil, err
-	}
-
-	result_filtered := res_protoJson["card"].(map[string]interface{})
-	
-	var res_card model.Card
-	jsonString, err := json.Marshal(result_filtered)
-	if err != nil {
-		return nil, err
-	}
-	json.Unmarshal(jsonString, &res_card)
-	
-	return &res_card, nil
-}
-
-// About get gprc server information pod 
-func (a *AdapaterGrpc) GetCardTokenGrpc(ctx context.Context, card model.Card) (*[]model.Card, error){
-	childLogger.Info().Str("func","GetCardTokenGrpc").Interface("trace-request-id", ctx.Value("trace-request-id")).Interface("card",card).Send()
-
-	// Trace
-	span := tracerProvider.Span(ctx, "adapter.GetCardTokenGrpc")
-	defer span.End()
-		
-	// Prepare to receive proto data
-	cardProto := proto.Card{ TokenData: card.TokenData}
-	cardTokenRequest := &proto.CardTokenRequest{Card: &cardProto}
-
-	// Set header for observability
-	header := metadata.New(map[string]string{ "trace-request-id": fmt.Sprintf("%s",ctx.Value("trace-request-id")) })
-	ctx = metadata.NewOutgoingContext(ctx, header)
-
-	// request the data from grpc
-	res_cardTokenResponse, err := a.serviceClient.GetCardToken(ctx, cardTokenRequest)
-	if err != nil {
-	  	return nil, err
-	}
-
-	// convert proto to json
-	response_str, err := a.grpcClientWorker.ProtoToJSON(res_cardTokenResponse)
-	if err != nil {
-		return nil, err
-  	}
-		  
-	// convert json to struct
-	var res_protoJson map[string]interface{}
-	err = json.Unmarshal([]byte(response_str), &res_protoJson)
-	if err != nil {
-		return nil, err
-	}
-
-	var list_cards []model.Card
-	if _, ok := res_protoJson["cards"].([]interface{}); ok {
-		for _, v := range res_protoJson["cards"].([]interface{}) {
-			res_card := model.Card{}
-			jsonString, err := json.Marshal(v)
-			if err != nil {
-				return nil, err
-			}
-			json.Unmarshal(jsonString, &res_card)
-			list_cards = append(list_cards, res_card)
-		}
-		
-	} else {
-		list_cards = append(list_cards, model.Card{})
-	}
-	return &list_cards, nil
-}
-
 // About get gprc server information pod 
 func (a *AdapaterGrpc) AddPaymentToken(ctx context.Context, payment model.Payment) (*model.Payment, error){
 	childLogger.Info().Str("func","AddPaymentToken").Interface("trace-request-id", ctx.Value("trace-request-id")).Interface("payment",payment).Send()
@@ -202,7 +101,8 @@ func (a *AdapaterGrpc) AddPaymentToken(ctx context.Context, payment model.Paymen
 									Currency: payment.Currency,
 									Amount: payment.Amount,
 									CardType: payment.CardType,
-									Mcc: payment.Mcc,	
+									Mcc: payment.Mcc,
+									TransactionId: *payment.TransactionId,	
 									}
 	paymentTokenRequest := &proto.PaymentTokenRequest{Payment: &paymentProto}
 
@@ -227,6 +127,8 @@ func (a *AdapaterGrpc) AddPaymentToken(ctx context.Context, payment model.Paymen
 
 	result_filtered := res_protoJson["payment"].(map[string]interface{})
 	
+	childLogger.Info().Str("func","=====================>").Interface("result_filtered", result_filtered).Send()
+
 	var res_payment model.Payment
 	jsonString, err := json.Marshal(result_filtered)
 	if err != nil {

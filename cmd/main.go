@@ -72,7 +72,7 @@ func main()  {
 		break
 	}
 
-	// Open GRPC channel
+	// Open client GRPC channel
 	goCoreGrpcClientWorker, err  := goCoreGrpcClientWorker.StartGrpcClient(appServer.ApiService[0].Url)
 	if err != nil {
 		childLogger.Error().Err(err).Msg("erro connect to grpc server")

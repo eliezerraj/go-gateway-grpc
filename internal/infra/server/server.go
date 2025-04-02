@@ -95,14 +95,6 @@ func (h HttpServer) StartHttpAppServer(	ctx context.Context,
 		json.NewEncoder(rw).Encode(appServer)
 	})
 	
-	addCardToken := myRouter.Methods(http.MethodPost, http.MethodOptions).Subrouter()
-	addCardToken.HandleFunc("/cardToken", core_middleware.MiddleWareErrorHandler(httpRouters.CreateCardToken))		
-	addCardToken.Use(otelmux.Middleware("go-gateway-grpc"))
-
-	getCardToken := myRouter.Methods(http.MethodGet, http.MethodOptions).Subrouter()
-	getCardToken.HandleFunc("/get/{id}", core_middleware.MiddleWareErrorHandler(httpRouters.GetCardToken))		
-	getCardToken.Use(otelmux.Middleware("go-gateway-grpc"))
-
 	getInfoPodGrpc := myRouter.Methods(http.MethodGet, http.MethodOptions).Subrouter()
 	getInfoPodGrpc.HandleFunc("/infoPodGrpc", core_middleware.MiddleWareErrorHandler(httpRouters.GetInfoPodGrpc))		
 	getInfoPodGrpc.Use(otelmux.Middleware("go-gateway-grpc"))
