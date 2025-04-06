@@ -13,7 +13,7 @@ import(
 	"github.com/go-gateway-grpc/internal/core/service"
 	"github.com/go-gateway-grpc/internal/infra/server"
 	"github.com/go-gateway-grpc/internal/adapter/database"
-	adapter_grpc "github.com/go-gateway-grpc/internal/adapter/grpc"
+	adapter_grpc "github.com/go-gateway-grpc/internal/adapter/grpc/client"
 
 	go_core_pg "github.com/eliezerraj/go-core/database/pg"
 	go_grpc_client_worker "github.com/eliezerraj/go-core/grpc"	

@@ -1,4 +1,4 @@
-package grpc
+package client
 
 import (
 	"fmt"
@@ -7,6 +7,7 @@ import (
 
 	"github.com/rs/zerolog/log"
 	"github.com/go-gateway-grpc/internal/core/model"
+	"github.com/go-gateway-grpc/internal/core/erro"
 
 	"google.golang.org/grpc/metadata"
 	go_core_observ 		"github.com/eliezerraj/go-core/observability"
@@ -15,7 +16,7 @@ import (
 	//proto "github.com/eliezerraj/go-grpc-proto/protogen/token"
 )
 
-var childLogger = log.With().Str("component","go-gateway-grpc").Str("package","internal.adapter.grpc").Logger()
+var childLogger = log.With().Str("component","go-gateway-grpc").Str("package","internal.adapter.grpc.client").Logger()
 var tracerProvider go_core_observ.TracerProvider
 var tokenServiceClient	proto.TokenServiceClient
 
@@ -84,11 +85,11 @@ func (a *AdapaterGrpc) GetInfoPodGrpc(ctx context.Context) (*model.InfoPod, erro
 }
 
 // About get gprc server information pod 
-func (a *AdapaterGrpc) AddPaymentToken(ctx context.Context, payment model.Payment) (*model.Payment, error){
-	childLogger.Info().Str("func","AddPaymentToken").Interface("trace-request-id", ctx.Value("trace-request-id")).Interface("payment",payment).Send()
+func (a *AdapaterGrpc) AddPaymentTokenGrpc(ctx context.Context, payment model.Payment) (*model.Payment, error){
+	childLogger.Info().Str("func","AddPaymentTokenGrpc").Interface("trace-request-id", ctx.Value("trace-request-id")).Interface("payment",payment).Send()
 
 	// Trace
-	span := tracerProvider.Span(ctx, "adapter.AddPaymentToken")
+	span := tracerProvider.Span(ctx, "adapter.AddPaymentTokenGrpc")
 	defer span.End()
 
 	// Set header for observability
@@ -118,17 +119,16 @@ func (a *AdapaterGrpc) AddPaymentToken(ctx context.Context, payment model.Paymen
 		return nil, err
   	}
 		  
-	// convert json to struct
+	// convert json to map
 	var res_protoJson map[string]interface{}
 	err = json.Unmarshal([]byte(response_str), &res_protoJson)
 	if err != nil {
 		return nil, err
 	}
+	childLogger.Info().Str("func","==========0===========>").Interface("res_protoJson", res_protoJson).Send()
 
+	// extract and convert payment
 	result_filtered := res_protoJson["payment"].(map[string]interface{})
-	
-	childLogger.Info().Str("func","=====================>").Interface("result_filtered", result_filtered).Send()
-
 	var res_payment model.Payment
 	jsonString, err := json.Marshal(result_filtered)
 	if err != nil {
@@ -136,5 +136,24 @@ func (a *AdapaterGrpc) AddPaymentToken(ctx context.Context, payment model.Paymen
 	}
 	json.Unmarshal(jsonString, &res_payment)
 
+	// extract and convert []steps
+	childLogger.Info().Str("func","==========3===========>").Interface("res_protoJson[steps]", res_protoJson["steps"]).Send()
+
+	steps, ok := res_protoJson["steps"].([]interface{})
+	if !ok {
+		return nil, erro.ErroPayloadMalInformed
+	}
+	var res_list_step_process []model.StepProcess
+	for _, item_step := range steps {
+		jsonString, err = json.Marshal(item_step)
+		if err != nil {
+			return nil, err
+		}
+		stepProcess := model.StepProcess{}
+		json.Unmarshal(jsonString, &stepProcess)
+		res_list_step_process = append(res_list_step_process, stepProcess)
+	}
+
+	res_payment.StepProcess = &res_list_step_process
 	return &res_payment, nil
 }

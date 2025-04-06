@@ -60,7 +60,13 @@ type Payment struct {
 	TransactionId	*string  	`json:"transaction_id,omitempty"`
 	FkTerminalId	int			`json:"fk_terminal_id,omitempty"`
 	Terminal		string		`json:"terminal,omitempty"`
+	StepProcess		*[]StepProcess	`json:"step_process,omitempty"`
 	CreatedAt		time.Time 	`json:"created_at,omitempty"`
 	UpdatedAt		*time.Time 	`json:"updated_at,omitempty"`
 	TenantID		string  	`json:"tenant_id,omitempty"`
+}
+
+type StepProcess struct {
+	Name	string  	`json:"step_process,omitempty"`
+	ProcessedAt	time.Time 	`json:"processed_at,omitempty"`
 }

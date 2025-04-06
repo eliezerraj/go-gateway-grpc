@@ -7,7 +7,7 @@ import(
 	"github.com/go-gateway-grpc/internal/adapter/database"
 	"github.com/rs/zerolog/log"
 
-	adapter_grpc 	"github.com/go-gateway-grpc/internal/adapter/grpc"
+	adapter_grpc 	"github.com/go-gateway-grpc/internal/adapter/grpc/client"
 	go_core_observ 	"github.com/eliezerraj/go-core/observability"
 )
 
@@ -66,7 +66,7 @@ func (s *WorkerService) AddPaymentToken(ctx context.Context, payment model.Payme
 	payment.TransactionId = res_uuid
 
 	// Send data via grpc
-	res_payment_token, err := s.adapaterGrpc.AddPaymentToken(ctx, payment)
+	res_payment_token, err := s.adapaterGrpc.AddPaymentTokenGrpc(ctx, payment)
 	if err != nil {
 		return nil, err
 	}
