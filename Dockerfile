@@ -1,5 +1,5 @@
 #docker build -t go-gateway-grpc .
-#docker run -dit --name go-go-gateway-grpc -p 6000:6000 go-go-gateway-grpc sleep infinity
+#docker run -dit --name go-gateway-grpc -p 6000:6000 go-gateway-grpc sleep infinity
 
 FROM golang:1.23.3 As builder
 
@@ -10,12 +10,12 @@ COPY . .
 RUN go mod tidy
 
 WORKDIR /app/cmd
-RUN go build -o go-go-gateway-grpc -ldflags '-linkmode external -w -extldflags "-static"'
+RUN go build -o go-gateway-grpc -ldflags '-linkmode external -w -extldflags "-static"'
 
 FROM alpine
 
 WORKDIR /app
-COPY --from=builder /app/cmd/go-go-gateway-grpc .
+COPY --from=builder /app/cmd/go-gateway-grpc .
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
-CMD ["/app/go-go-gateway-grpc"]
+CMD ["/app/go-gateway-grpc"]
