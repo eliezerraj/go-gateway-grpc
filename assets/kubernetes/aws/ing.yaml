@@ -1,24 +1,24 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ing-go-ledger
+  name: ing-go-gateway-grpc
   namespace: test-a
   annotations:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/default-backend: "svc-go-ledger"
+    nginx.ingress.kubernetes.io/default-backend: "svc-go-gateway-grpc"
     nginx.ingress.kubernetes.io/proxy-body-size: 10m
 spec:
   ingressClassName: nginx
   rules:
-    - host: go-ledger.architecturedev.caradhras.io
+    - host: go-gateway-grpc.architecturedev.caradhras.io
       http:
         paths:
         - path: /
           pathType: Prefix
           backend:
             service:
-              name: svc-go-ledger
+              name: svc-go-gateway-grpc
               port:
-                number: 6003
+                number: 6000

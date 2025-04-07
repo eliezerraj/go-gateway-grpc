@@ -1,7 +1,7 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: &app-name go-ledger-hpa
+  name: &app-name go-gateway-grpc-hpa
   namespace: test-a
   labels:
     app: *app-name
