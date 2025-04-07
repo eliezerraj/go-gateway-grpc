@@ -57,14 +57,18 @@ func (h HttpServer) StartHttpAppServer(	ctx context.Context,
 											appServer.ConfigOTEL, 
 											&infoTrace)
 	
-	otel.SetTextMapPropagator(xray.Propagator{})
-	otel.SetTracerProvider(tp)
+	if tp != nil {
+		otel.SetTextMapPropagator(xray.Propagator{})
+		otel.SetTracerProvider(tp)
+	}
 
 	// handle defer
 	defer func() { 
-		err := tp.Shutdown(ctx)
-		if err != nil{
-			childLogger.Info().Err(err).Send()
+		if tp != nil {
+			err := tp.Shutdown(ctx)
+			if err != nil{
+				childLogger.Error().Err(err).Send()
+			}
 		}
 		childLogger.Info().Msg("stop done !!!")
 	}()
@@ -102,6 +106,10 @@ func (h HttpServer) StartHttpAppServer(	ctx context.Context,
 	addPaymentToken := myRouter.Methods(http.MethodPost, http.MethodOptions).Subrouter()
 	addPaymentToken.HandleFunc("/paymentToken", core_middleware.MiddleWareErrorHandler(httpRouters.AddPaymentToken))		
 	addPaymentToken.Use(otelmux.Middleware("go-gateway-grpc"))
+
+	addPayment := myRouter.Methods(http.MethodPost, http.MethodOptions).Subrouter()
+	addPayment.HandleFunc("/payment", core_middleware.MiddleWareErrorHandler(httpRouters.AddPayment))		
+	addPayment.Use(otelmux.Middleware("go-gateway-grpc"))
 
 	// setup http server
 	srv := http.Server{

@@ -137,7 +137,7 @@ func (a *AdapaterGrpc) AddPaymentTokenGrpc(ctx context.Context, payment model.Pa
 	json.Unmarshal(jsonString, &res_payment)
 
 	// extract and convert []steps
-	childLogger.Info().Str("func","==========3===========>").Interface("res_protoJson[steps]", res_protoJson["steps"]).Send()
+	childLogger.Info().Str("func","==========1===========>").Interface("res_protoJson[steps]", res_protoJson["steps"]).Send()
 
 	steps, ok := res_protoJson["steps"].([]interface{})
 	if !ok {
