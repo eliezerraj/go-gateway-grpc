@@ -50,12 +50,36 @@ func (s *WorkerService) GetInfoPodGrpc(ctx context.Context) (*model.InfoPod, err
 	return res_pod, nil
 }
 
-// About create a card token
+// About payment via token (GRPC)
 func (s *WorkerService) AddPaymentToken(ctx context.Context, payment model.Payment) (*model.Payment, error){
 	childLogger.Info().Str("func","AddPaymentToken").Interface("trace-resquest-id", ctx.Value("trace-request-id")).Interface("payment", payment).Send()
 
 	// Trace
 	span := tracerProvider.Span(ctx, "service.AddPaymentToken")
+	span.End()
+
+	// Get a transactio UUID
+	res_uuid, err := s.workerRepository.GetTransactionUUID(ctx)
+	if err != nil {
+		return nil, err
+	}
+	payment.TransactionId = res_uuid
+
+	// Send data via grpc
+	res_payment_token, err := s.adapaterGrpc.AddPaymentTokenGrpc(ctx, payment)
+	if err != nil {
+		return nil, err
+	}
+	
+	return res_payment_token, nil
+}
+
+// About payment via plain card (REST
+func (s *WorkerService) AddPayment(ctx context.Context, payment model.Payment) (*model.Payment, error){
+	childLogger.Info().Str("func","AddPayment").Interface("trace-resquest-id", ctx.Value("trace-request-id")).Interface("payment", payment).Send()
+
+	// Trace
+	span := tracerProvider.Span(ctx, "service.AddPayment")
 	span.End()
 
 	// Get a transactio UUID

@@ -73,22 +73,24 @@ func main()  {
 	}
 
 	// Open client GRPC channel
+	var adapaterGrpc adapter_grpc.AdapaterGrpc
 	goCoreGrpcClientWorker, err  := goCoreGrpcClientWorker.StartGrpcClient(appServer.ApiService[0].Url)
 	if err != nil {
-		childLogger.Error().Err(err).Msg("erro connect to grpc server")
-	}
-	// test connection
-	err = goCoreGrpcClientWorker.TestConnection(ctx)
-	if err != nil {
-		childLogger.Error().Err(err).Msg("erro connect to grpc server")
+		childLogger.Error().Err(err).Msg("erro start to grpc server")
 	} else {
-		childLogger.Info().Msg("gprc channel openned sucessfull")
+		// test connection
+		err = goCoreGrpcClientWorker.TestConnection(ctx)
+		if err != nil {
+			childLogger.Error().Err(err).Msg("erro connect to grpc server")
+		} else {
+			childLogger.Info().Msg("gprc channel openned sucessfull")
+		}
+		adapaterGrpc = *adapter_grpc.NewAdapaterGrpc(goCoreGrpcClientWorker)
 	}
 
 	// create and wire
-	adapaterGrpc := adapter_grpc.NewAdapaterGrpc(goCoreGrpcClientWorker)
 	database := database.NewWorkerRepository(&databasePGServer)
-	workerService := service.NewWorkerService(database, appServer.ApiService, adapaterGrpc )
+	workerService := service.NewWorkerService(database, appServer.ApiService, &adapaterGrpc )
 
 	httpRouters := api.NewHttpRouters(workerService)
 	httpServer := server.NewHttpAppServer(appServer.Server)

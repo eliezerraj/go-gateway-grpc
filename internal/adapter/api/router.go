@@ -78,7 +78,7 @@ func (h *HttpRouters) GetInfoPodGrpc(rw http.ResponseWriter, req *http.Request) 
 
 // About add payment via token
 func (h *HttpRouters) AddPaymentToken(rw http.ResponseWriter, req *http.Request) error {
-	childLogger.Info().Str("func","AddPayment").Interface("trace-resquest-id", req.Context().Value("trace-request-id")).Send()
+	childLogger.Info().Str("func","AddPaymentToken").Interface("trace-resquest-id", req.Context().Value("trace-request-id")).Send()
 
 	span := tracerProvider.Span(req.Context(), "adapter.api.AddPaymentToken")
 	defer span.End()
@@ -92,6 +92,36 @@ func (h *HttpRouters) AddPaymentToken(rw http.ResponseWriter, req *http.Request)
 	defer req.Body.Close()
 
 	res, err := h.workerService.AddPaymentToken(req.Context(), payment)
+	if err != nil {
+		switch err {
+		case erro.ErrNotFound:
+			core_apiError = core_apiError.NewAPIError(err, http.StatusNotFound)
+		default:
+			core_apiError = core_apiError.NewAPIError(err, http.StatusInternalServerError)
+		}
+		return &core_apiError
+	}
+	
+	return core_json.WriteJSON(rw, http.StatusOK, res)
+}
+
+
+// About add payment
+func (h *HttpRouters) AddPayment(rw http.ResponseWriter, req *http.Request) error {
+	childLogger.Info().Str("func","AddPayment").Interface("trace-resquest-id", req.Context().Value("trace-request-id")).Send()
+
+	span := tracerProvider.Span(req.Context(), "adapter.api.AddPayment")
+	defer span.End()
+
+	payment := model.Payment{}
+	err := json.NewDecoder(req.Body).Decode(&payment)
+    if err != nil {
+		core_apiError = core_apiError.NewAPIError(err, http.StatusBadRequest)
+		return &core_apiError
+    }
+	defer req.Body.Close()
+
+	res, err := h.workerService.AddPayment(req.Context(), payment)
 	if err != nil {
 		switch err {
 		case erro.ErrNotFound:

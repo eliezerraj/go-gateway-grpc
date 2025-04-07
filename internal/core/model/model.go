@@ -58,6 +58,7 @@ type Payment struct {
 	Amount			float64 	`json:"amount,omitempty"`
 	PaymentAt		time.Time	`json:"payment_at,omitempty"`
 	TransactionId	*string  	`json:"transaction_id,omitempty"`
+	ResquestId		*string  	`json:"request_id,omitempty"`
 	FkTerminalId	int			`json:"fk_terminal_id,omitempty"`
 	Terminal		string		`json:"terminal,omitempty"`
 	StepProcess		*[]StepProcess	`json:"step_process,omitempty"`
