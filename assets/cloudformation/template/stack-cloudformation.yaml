@@ -13,7 +13,7 @@ Parameters:
     Type: String
   ServiceAccountName:
     Type: String
-    Default: sa-go-go-gateway-grpc
+    Default: sa-go-gateway-grpc
   K8Namespace:
     Type: String
     Description: Namespace
@@ -21,15 +21,15 @@ Parameters:
 Mappings:
   Tag:
     service:
-      value: go-go-gateway-grpc
+      value: go-gateway-grpc
     owner:
       value: architecture
     platform:
       value: poc
     application:
-      value: go-go-gateway-grpc
+      value: go-gateway-grpc
     component:
-      value: go-go-gateway-grpc
+      value: go-gateway-grpc
     PCIClassification:
       value: non-pci
 Resources:
