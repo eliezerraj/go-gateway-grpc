@@ -31,7 +31,7 @@ spec:
         image: 908671954593.dkr.ecr.us-east-2.amazonaws.com/go-gateway-grpc:latest
         envFrom:
         - configMapRef:
-            name: go-ledger-cm
+            name: go-gateway-grpc-cm
         volumeMounts:
           - mountPath: "/var/pod/secret"
             name: volume-secret
