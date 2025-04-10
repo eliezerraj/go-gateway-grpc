@@ -1,18 +1,25 @@
 package service
 
 import(
+	"fmt"
 	"context"
+	"errors"
+	"net/http"	
+	"encoding/json"
 
+	"github.com/go-gateway-grpc/internal/core/erro"
 	"github.com/go-gateway-grpc/internal/core/model"
 	"github.com/go-gateway-grpc/internal/adapter/database"
 	"github.com/rs/zerolog/log"
 
 	adapter_grpc 	"github.com/go-gateway-grpc/internal/adapter/grpc/client"
 	go_core_observ 	"github.com/eliezerraj/go-core/observability"
+	go_core_api "github.com/eliezerraj/go-core/api"
 )
 
 var childLogger = log.With().Str("component","go-gateway-grpc").Str("package","internal.core.service").Logger()
 var tracerProvider go_core_observ.TracerProvider
+var apiService go_core_api.ApiService
 
 type WorkerService struct {
 	workerRepository 	*database.WorkerRepository
@@ -31,6 +38,23 @@ func NewWorkerService(	workerRepository *database.WorkerRepository,
 		apiService: apiService,
 		adapaterGrpc: adapaterGrpc,
 	}
+}
+
+// About handle/convert http status code
+func errorStatusCode(statusCode int, serviceName string) error{
+	childLogger.Info().Str("func","errorStatusCode").Interface("serviceName", serviceName).Interface("statusCode", statusCode).Send()
+	var err error
+	switch statusCode {
+		case http.StatusUnauthorized:
+			err = erro.ErrUnauthorized
+		case http.StatusForbidden:
+			err = erro.ErrHTTPForbiden
+		case http.StatusNotFound:
+			err = erro.ErrNotFound
+		default:
+			err = errors.New(fmt.Sprintf("service %s in outage", serviceName))
+		}
+	return err
 }
 
 // About get gprc server information pod 
@@ -74,12 +98,13 @@ func (s *WorkerService) AddPaymentToken(ctx context.Context, payment model.Payme
 	return res_payment_token, nil
 }
 
-// About payment via plain card (REST
+// About payment via plain card (REST)
 func (s *WorkerService) AddPayment(ctx context.Context, payment model.Payment) (*model.Payment, error){
 	childLogger.Info().Str("func","AddPayment").Interface("trace-resquest-id", ctx.Value("trace-request-id")).Interface("payment", payment).Send()
 
 	// Trace
 	span := tracerProvider.Span(ctx, "service.AddPayment")
+	trace_id := fmt.Sprintf("%v",ctx.Value("trace-request-id"))
 	span.End()
 
 	// Get a transactio UUID
@@ -89,11 +114,34 @@ func (s *WorkerService) AddPayment(ctx context.Context, payment model.Payment) (
 	}
 	payment.TransactionId = res_uuid
 
-	// Send data via grpc
-	res_payment_token, err := s.adapaterGrpc.AddPaymentTokenGrpc(ctx, payment)
-	if err != nil {
-		return nil, err
+	// Set headers
+	headers := map[string]string{
+		"Content-Type":  "application/json;charset=UTF-8",
+		"X-Request-Id": trace_id,
+		"x-apigw-api-id": s.apiService[1].XApigwApiId,
+		"Host": s.apiService[1].HostName,
 	}
+	httpClient := go_core_api.HttpClient {
+		Url: 	s.apiService[1].Url + "/addPayment",
+		Method: s.apiService[1].Method,
+		Timeout: 15,
+		Headers: &headers,
+	}
+
+	// Send data via grpc
+	res_payload, statusCode, err := apiService.CallRestApi(	ctx,
+															httpClient, 
+															payment)
 	
-	return res_payment_token, nil
+	if err != nil {
+		return nil, errorStatusCode(statusCode, s.apiService[1].Name)
+	}
+	jsonString, err  := json.Marshal(res_payload)
+	if err != nil {
+		return nil, errors.New(err.Error())
+    }
+	var payment_parsed model.Payment
+	json.Unmarshal(jsonString, &payment_parsed)
+
+	return &payment_parsed, nil
 }
