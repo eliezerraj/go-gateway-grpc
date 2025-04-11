@@ -111,6 +111,10 @@ func (h HttpServer) StartHttpAppServer(	ctx context.Context,
 	addPayment.HandleFunc("/payment", core_middleware.MiddleWareErrorHandler(httpRouters.AddPayment))		
 	addPayment.Use(otelmux.Middleware("go-gateway-grpc"))
 
+	pixTransaction := myRouter.Methods(http.MethodPost, http.MethodOptions).Subrouter()
+	pixTransaction.HandleFunc("/pixTransaction", core_middleware.MiddleWareErrorHandler(httpRouters.PixTransaction))		
+	pixTransaction.Use(otelmux.Middleware("go-gateway-grpc"))
+
 	// setup http server
 	srv := http.Server{
 		Addr:         ":" +  strconv.Itoa(h.httpServer.Port),      	

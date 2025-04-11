@@ -37,7 +37,7 @@ type ApiService struct {
 	Name			string `json:"name_service"`
 	Url				string `json:"url"`
 	Method			string `json:"method"`
-	Header_x_apigw_api_id	string `json:"x-apigw-api-id"`
+	XApigwApiId		string `json:"x-apigw-api-id"`
 	HostName		string `json:"host_name"`
 }
 
@@ -71,4 +71,25 @@ type Payment struct {
 type StepProcess struct {
 	Name	string  	`json:"step_process,omitempty"`
 	ProcessedAt	time.Time 	`json:"processed_at,omitempty"`
+}
+
+type Account struct {
+	ID				int			`json:"id,omitempty"`
+	AccountID		string		`json:"account_id,omitempty"`
+	PersonID		string  	`json:"person_id,omitempty"`
+}
+
+type PixTransaction struct {
+	ID				int			`json:"id,omitempty"`
+	TransactionId	string 		`json:"transaction_id,omitempty"`
+	TransactionAt	time.Time 	`json:"transaction_at,omitempty"`	
+	RequestId		string 		`json:"request_id,omitempty"`
+	AccountFrom		Account		`json:"account_from,omitempty"`
+	AccountTo		Account		`json:"account_to,omitempty"`
+	Status			string  	`json:"status,omitempty"`
+	Currency		string 		`json:"currency,omitempty"`
+	Amount			float64 	`json:"amount,omitempty"`	
+	StepProcess		*[]StepProcess	`json:"step_process,omitempty"`
+	CreatedAt		time.Time 	`json:"created_at,omitempty"`
+	UpdatedAt		*time.Time 	`json:"updated_at,omitempty"`
 }
