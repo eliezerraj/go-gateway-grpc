@@ -145,3 +145,51 @@ func (s *WorkerService) AddPayment(ctx context.Context, payment model.Payment) (
 
 	return &payment_parsed, nil
 }
+
+// About payment via plain card (REST)
+func (s *WorkerService) PixTransaction(ctx context.Context, pixTransaction model.PixTransaction) (*model.PixTransaction, error){
+	childLogger.Info().Str("func","PixTransaction").Interface("trace-resquest-id", ctx.Value("trace-request-id")).Interface("pixTransaction", pixTransaction).Send()
+
+	// Trace
+	span := tracerProvider.Span(ctx, "service.PixTransaction")
+	trace_id := fmt.Sprintf("%v",ctx.Value("trace-request-id"))
+	span.End()
+
+	// Get a transactio UUID
+	res_uuid, err := s.workerRepository.GetTransactionUUID(ctx)
+	if err != nil {
+		return nil, err
+	}
+	pixTransaction.TransactionId = *res_uuid
+
+	// Set headers
+	headers := map[string]string{
+		"Content-Type":  "application/json;charset=UTF-8",
+		"X-Request-Id": trace_id,
+		"x-apigw-api-id": s.apiService[2].XApigwApiId,
+		"Host": s.apiService[1].HostName,
+	}
+	httpClient := go_core_api.HttpClient {
+		Url: 	s.apiService[1].Url + "/pixTransaction",
+		Method: s.apiService[1].Method,
+		Timeout: 15,
+		Headers: &headers,
+	}
+
+	// Send data via grpc
+	res_payload, statusCode, err := apiService.CallRestApi(	ctx,
+															httpClient, 
+															pixTransaction)
+	
+	if err != nil {
+		return nil, errorStatusCode(statusCode, s.apiService[1].Name)
+	}
+	jsonString, err  := json.Marshal(res_payload)
+	if err != nil {
+		return nil, errors.New(err.Error())
+    }
+	var pix_transaction_parsed model.PixTransaction
+	json.Unmarshal(jsonString, &pix_transaction_parsed)
+
+	return &pix_transaction_parsed, nil
+}

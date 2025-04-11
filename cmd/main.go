@@ -75,8 +75,6 @@ func main()  {
 	// Open client GRPC channel
 	var adapaterGrpc adapter_grpc.AdapaterGrpc
 
-	childLogger.Info().Str("=================>",appServer.ApiService[0].Url).Send()
-
 	goCoreGrpcClientWorker, err  := goCoreGrpcClientWorker.StartGrpcClient(appServer.ApiService[0].Url)
 	if err != nil {
 		childLogger.Error().Err(err).Msg("erro start to grpc server")
