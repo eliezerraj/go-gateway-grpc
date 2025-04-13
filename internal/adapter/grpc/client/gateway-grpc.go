@@ -27,30 +27,6 @@ type AdapaterGrpc struct {
 	serviceClient		proto.TokenServiceClient
 }
 
-/*type metadataCarrier struct {
-	metadata.MD
-}
-
-func (mc metadataCarrier) Get(key string) string {
-	values := mc.MD.Get(key)
-	if len(values) == 0 {
-		return ""
-	}
-	return values[0]
-}
-
-func (mc metadataCarrier) Set(key, value string) {
-	mc.MD.Set(key, value)
-}
-
-func (mc metadataCarrier) Keys() []string {
-	keys := make([]string, 0, len(mc.MD))
-	for k := range mc.MD {
-		keys = append(keys, k)
-	}
-	return keys
-}*/
-
 // About create a new worker service
 func NewAdapaterGrpc( grpcClientWorker	*go_grpc_client.GrpcClientWorker ) *AdapaterGrpc{
 	childLogger.Info().Str("func","NewAdapaterGrpc").Send()
@@ -157,7 +133,6 @@ func (a *AdapaterGrpc) AddPaymentTokenGrpc(ctx context.Context, payment model.Pa
 		return nil, err
 	}
 	childLogger.Info().Str("func","==========0===========>").Interface("res_protoJson", res_protoJson).Send()
-
 	// extract and convert payment
 	result_filtered := res_protoJson["payment"].(map[string]interface{})
 	var res_payment model.Payment
