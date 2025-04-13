@@ -10,9 +10,11 @@ import (
 	"github.com/go-gateway-grpc/internal/core/erro"
 
 	"google.golang.org/grpc/metadata"
-	go_core_observ 		"github.com/eliezerraj/go-core/observability"
+	go_core_observ 	"github.com/eliezerraj/go-core/observability"
 	go_grpc_client "github.com/eliezerraj/go-core/grpc"	
 	proto "github.com/go-gateway-grpc/protogen/token"
+
+	"go.opentelemetry.io/otel"
 	//proto "github.com/eliezerraj/go-grpc-proto/protogen/token"
 )
 
@@ -24,6 +26,30 @@ type AdapaterGrpc struct {
 	grpcClientWorker	*go_grpc_client.GrpcClientWorker
 	serviceClient		proto.TokenServiceClient
 }
+
+/*type metadataCarrier struct {
+	metadata.MD
+}
+
+func (mc metadataCarrier) Get(key string) string {
+	values := mc.MD.Get(key)
+	if len(values) == 0 {
+		return ""
+	}
+	return values[0]
+}
+
+func (mc metadataCarrier) Set(key, value string) {
+	mc.MD.Set(key, value)
+}
+
+func (mc metadataCarrier) Keys() []string {
+	keys := make([]string, 0, len(mc.MD))
+	for k := range mc.MD {
+		keys = append(keys, k)
+	}
+	return keys
+}*/
 
 // About create a new worker service
 func NewAdapaterGrpc( grpcClientWorker	*go_grpc_client.GrpcClientWorker ) *AdapaterGrpc{
@@ -106,6 +132,11 @@ func (a *AdapaterGrpc) AddPaymentTokenGrpc(ctx context.Context, payment model.Pa
 									TransactionId: *payment.TransactionId,	
 									}
 	paymentTokenRequest := &proto.PaymentTokenRequest{Payment: &paymentProto}
+
+	// trace grpc
+	md := metadata.New(nil)
+	otel.GetTextMapPropagator().Inject(ctx, go_core_observ.MetadataCarrier{md})
+	ctx = metadata.NewOutgoingContext(ctx, md)
 
 	// request the data from grpc
 	res_paymentTokenResponse, err := a.serviceClient.AddPaymentToken(ctx, paymentTokenRequest)
