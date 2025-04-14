@@ -10,9 +10,11 @@ import (
 	"github.com/go-gateway-grpc/internal/core/erro"
 
 	"google.golang.org/grpc/metadata"
-	go_core_observ 		"github.com/eliezerraj/go-core/observability"
+	go_core_observ 	"github.com/eliezerraj/go-core/observability"
 	go_grpc_client "github.com/eliezerraj/go-core/grpc"	
 	proto "github.com/go-gateway-grpc/protogen/token"
+
+	"go.opentelemetry.io/otel"
 	//proto "github.com/eliezerraj/go-grpc-proto/protogen/token"
 )
 
@@ -107,6 +109,11 @@ func (a *AdapaterGrpc) AddPaymentTokenGrpc(ctx context.Context, payment model.Pa
 									}
 	paymentTokenRequest := &proto.PaymentTokenRequest{Payment: &paymentProto}
 
+	// trace grpc
+	md := metadata.New(nil)
+	otel.GetTextMapPropagator().Inject(ctx, go_core_observ.MetadataCarrier{md})
+	ctx = metadata.NewOutgoingContext(ctx, md)
+
 	// request the data from grpc
 	res_paymentTokenResponse, err := a.serviceClient.AddPaymentToken(ctx, paymentTokenRequest)
 	if err != nil {
@@ -126,7 +133,6 @@ func (a *AdapaterGrpc) AddPaymentTokenGrpc(ctx context.Context, payment model.Pa
 		return nil, err
 	}
 	childLogger.Info().Str("func","==========0===========>").Interface("res_protoJson", res_protoJson).Send()
-
 	// extract and convert payment
 	result_filtered := res_protoJson["payment"].(map[string]interface{})
 	var res_payment model.Payment
