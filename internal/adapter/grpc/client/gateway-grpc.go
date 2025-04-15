@@ -95,8 +95,9 @@ func (a *AdapaterGrpc) AddPaymentTokenGrpc(ctx context.Context, payment model.Pa
 	defer span.End()
 
 	// Set header for observability
-	header := metadata.New(map[string]string{ "trace-request-id": fmt.Sprintf("%s",ctx.Value("trace-request-id")) })
-	ctx = metadata.NewOutgoingContext(ctx, header)
+	header_grpc := metadata.New(map[string]string{ "trace-request-id": fmt.Sprintf("%s",ctx.Value("trace-request-id")) })
+	otel.GetTextMapPropagator().Inject(ctx, go_core_observ.MetadataCarrier{header_grpc})
+	ctx = metadata.NewOutgoingContext(ctx, header_grpc)
 
 	// Prepare to paymento proto
 	paymentProto := proto.Payment{  TokenData: payment.TokenData,
@@ -105,14 +106,8 @@ func (a *AdapaterGrpc) AddPaymentTokenGrpc(ctx context.Context, payment model.Pa
 									Amount: payment.Amount,
 									CardType: payment.CardType,
 									Mcc: payment.Mcc,
-									TransactionId: *payment.TransactionId,	
-									}
+									TransactionId: *payment.TransactionId,}
 	paymentTokenRequest := &proto.PaymentTokenRequest{Payment: &paymentProto}
-
-	// trace grpc
-	md := metadata.New(nil)
-	otel.GetTextMapPropagator().Inject(ctx, go_core_observ.MetadataCarrier{md})
-	ctx = metadata.NewOutgoingContext(ctx, md)
 
 	// request the data from grpc
 	res_paymentTokenResponse, err := a.serviceClient.AddPaymentToken(ctx, paymentTokenRequest)
@@ -132,7 +127,8 @@ func (a *AdapaterGrpc) AddPaymentTokenGrpc(ctx context.Context, payment model.Pa
 	if err != nil {
 		return nil, err
 	}
-	childLogger.Info().Str("func","==========0===========>").Interface("res_protoJson", res_protoJson).Send()
+	childLogger.Info().Str("func","==res_protoJson=>").Interface("res_protoJson", res_protoJson).Send()
+
 	// extract and convert payment
 	result_filtered := res_protoJson["payment"].(map[string]interface{})
 	var res_payment model.Payment
@@ -143,8 +139,6 @@ func (a *AdapaterGrpc) AddPaymentTokenGrpc(ctx context.Context, payment model.Pa
 	json.Unmarshal(jsonString, &res_payment)
 
 	// extract and convert []steps
-	childLogger.Info().Str("func","==========1===========>").Interface("res_protoJson[steps]", res_protoJson["steps"]).Send()
-
 	steps, ok := res_protoJson["steps"].([]interface{})
 	if !ok {
 		return nil, erro.ErroPayloadMalInformed
