@@ -59,7 +59,7 @@ func errorStatusCode(statusCode int, serviceName string) error{
 
 // About get gprc server information pod 
 func (s *WorkerService) GetInfoPodGrpc(ctx context.Context) (*model.InfoPod, error){
-	childLogger.Info().Str("func","GetInfoPodGrpc").Interface("trace-resquest-id", ctx.Value("trace-request-id")).Send()
+	childLogger.Info().Str("func","GetInfoPodGrpc").Interface("trace-request-id", ctx.Value("trace-request-id")).Send()
 
 	// Trace
 	span := tracerProvider.Span(ctx, "service.GetInfoPodGrpc")
@@ -76,7 +76,7 @@ func (s *WorkerService) GetInfoPodGrpc(ctx context.Context) (*model.InfoPod, err
 
 // About payment via token (GRPC)
 func (s *WorkerService) AddPaymentToken(ctx context.Context, payment model.Payment) (*model.Payment, error){
-	childLogger.Info().Str("func","AddPaymentToken").Interface("trace-resquest-id", ctx.Value("trace-request-id")).Interface("payment", payment).Send()
+	childLogger.Info().Str("func","AddPaymentToken").Interface("trace-request-id", ctx.Value("trace-request-id")).Interface("payment", payment).Send()
 
 	// Trace
 	span := tracerProvider.Span(ctx, "service.AddPaymentToken")
@@ -100,7 +100,7 @@ func (s *WorkerService) AddPaymentToken(ctx context.Context, payment model.Payme
 
 // About payment via plain card (REST)
 func (s *WorkerService) AddPayment(ctx context.Context, payment model.Payment) (*model.Payment, error){
-	childLogger.Info().Str("func","AddPayment").Interface("trace-resquest-id", ctx.Value("trace-request-id")).Interface("payment", payment).Send()
+	childLogger.Info().Str("func","AddPayment").Interface("trace-request-id", ctx.Value("trace-request-id")).Interface("payment", payment).Send()
 
 	// Trace
 	span := tracerProvider.Span(ctx, "service.AddPayment")
@@ -148,7 +148,7 @@ func (s *WorkerService) AddPayment(ctx context.Context, payment model.Payment) (
 
 // About payment via plain card (REST)
 func (s *WorkerService) PixTransaction(ctx context.Context, pixTransaction model.PixTransaction) (*model.PixTransaction, error){
-	childLogger.Info().Str("func","PixTransaction").Interface("trace-resquest-id", ctx.Value("trace-request-id")).Interface("pixTransaction", pixTransaction).Send()
+	childLogger.Info().Str("func","PixTransaction").Interface("trace-request-id", ctx.Value("trace-request-id")).Interface("pixTransaction", pixTransaction).Send()
 
 	// Trace
 	span := tracerProvider.Span(ctx, "service.PixTransaction")
