@@ -9,22 +9,26 @@ import(
 
 	"github.com/go-gateway-grpc/internal/core/erro"
 	"github.com/go-gateway-grpc/internal/core/model"
-	"github.com/go-gateway-grpc/internal/adapter/database"
+	"github.com/go-gateway-grpc/internal/adapter/database"	
+	cb "github.com/go-gateway-grpc/internal/infra/circuitBreaker"
+
 	"github.com/rs/zerolog/log"
+	"github.com/sony/gobreaker"
 
 	adapter_grpc 	"github.com/go-gateway-grpc/internal/adapter/grpc/client"
 	go_core_observ 	"github.com/eliezerraj/go-core/observability"
-	go_core_api "github.com/eliezerraj/go-core/api"
+	go_core_api 	"github.com/eliezerraj/go-core/api"
 )
 
 var childLogger = log.With().Str("component","go-gateway-grpc").Str("package","internal.core.service").Logger()
-var tracerProvider go_core_observ.TracerProvider
-var apiService go_core_api.ApiService
+var tracerProvider 	go_core_observ.TracerProvider
+var apiService 		go_core_api.ApiService
 
 type WorkerService struct {
 	workerRepository 	*database.WorkerRepository
 	apiService			[]model.ApiService
 	adapaterGrpc		*adapter_grpc.AdapaterGrpc
+	circuitBreaker		*gobreaker.CircuitBreaker
 }
 
 // About create a new worker service
@@ -32,11 +36,14 @@ func NewWorkerService(	workerRepository *database.WorkerRepository,
 						apiService		[]model.ApiService,
 						adapaterGrpc	*adapter_grpc.AdapaterGrpc ) *WorkerService{
 	childLogger.Info().Str("func","NewWorkerService").Send()
+	
+	cb := cb.CircuitBreakerConfig()
 
 	return &WorkerService{
 		workerRepository: workerRepository,
 		apiService: apiService,
 		adapaterGrpc: adapaterGrpc,
+		circuitBreaker: cb,
 	}
 }
 
@@ -65,6 +72,22 @@ func (s *WorkerService) GetInfoPodGrpc(ctx context.Context) (*model.InfoPod, err
 	span := tracerProvider.Span(ctx, "service.GetInfoPodGrpc")
 	defer span.End()
 
+	// Check if grpc server is OK
+	_, err := s.circuitBreaker.Execute(func() (interface{}, error) {
+		if s.adapaterGrpc.GrpcClientWorker == nil {
+			return nil, erro.ErroGrpcServer
+		}
+		err := s.adapaterGrpc.GrpcClientWorker.TestConnection(ctx)
+		if err != nil {
+			return nil, erro.ErroGrpcServer
+		}
+		return nil, nil
+	})
+
+	if (err != nil) {
+		return nil, err
+	}
+
 	// Send via grpc
 	res_pod, err :=s.adapaterGrpc.GetInfoPodGrpc(ctx)
 	if err != nil {
@@ -81,6 +104,22 @@ func (s *WorkerService) AddPaymentToken(ctx context.Context, payment model.Payme
 	// Trace
 	span := tracerProvider.Span(ctx, "service.AddPaymentToken")
 	span.End()
+
+	// Check if grpc server is OK
+	_, err := s.circuitBreaker.Execute(func() (interface{}, error) {
+		if s.adapaterGrpc.GrpcClientWorker == nil {
+			return nil, erro.ErroGrpcServer
+		}
+		err := s.adapaterGrpc.GrpcClientWorker.TestConnection(ctx)
+		if err != nil {
+			return nil, erro.ErroGrpcServer
+		}
+		return nil, nil
+	})
+
+	if (err != nil) {
+		return nil, err
+	}
 
 	// Get a transactio UUID
 	res_uuid, err := s.workerRepository.GetTransactionUUID(ctx)

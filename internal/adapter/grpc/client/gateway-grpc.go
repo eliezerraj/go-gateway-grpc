@@ -23,7 +23,7 @@ var tracerProvider go_core_observ.TracerProvider
 var tokenServiceClient	proto.TokenServiceClient
 
 type AdapaterGrpc struct {
-	grpcClientWorker	*go_grpc_client.GrpcClientWorker
+	GrpcClientWorker	*go_grpc_client.GrpcClientWorker
 	serviceClient		proto.TokenServiceClient
 }
 
@@ -35,7 +35,7 @@ func NewAdapaterGrpc( grpcClientWorker	*go_grpc_client.GrpcClientWorker ) *Adapa
 	serviceClient := proto.NewTokenServiceClient(grpcClientWorker.GrcpClient)
 
 	return &AdapaterGrpc{
-		grpcClientWorker: grpcClientWorker,
+		GrpcClientWorker: grpcClientWorker,
 		serviceClient:	serviceClient,
 	}
 }
@@ -62,7 +62,7 @@ func (a *AdapaterGrpc) GetInfoPodGrpc(ctx context.Context) (*model.InfoPod, erro
 	}
 
 	// convert proto to json
-	response_str, err := a.grpcClientWorker.ProtoToJSON(res_podInfoResponse)
+	response_str, err := a.GrpcClientWorker.ProtoToJSON(res_podInfoResponse)
 	if err != nil {
 		return nil, err
   	}
@@ -116,7 +116,7 @@ func (a *AdapaterGrpc) AddPaymentTokenGrpc(ctx context.Context, payment model.Pa
 	}
 
 	// convert proto to json
-	response_str, err := a.grpcClientWorker.ProtoToJSON(res_paymentTokenResponse)
+	response_str, err := a.GrpcClientWorker.ProtoToJSON(res_paymentTokenResponse)
 	if err != nil {
 		return nil, err
   	}
