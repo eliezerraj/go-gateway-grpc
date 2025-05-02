@@ -75,7 +75,7 @@ func (s *WorkerService) GetInfoPodGrpc(ctx context.Context) (*model.InfoPod, err
 	// Check if grpc server is OK
 	_, err := s.circuitBreaker.Execute(func() (interface{}, error) {
 		if s.adapaterGrpc.GrpcClientWorker == nil {
-			return nil, erro.ErroGrpcServer
+			return nil, erro.ErroGrpcServerNill
 		}
 		err := s.adapaterGrpc.GrpcClientWorker.TestConnection(ctx)
 		if err != nil {
@@ -108,7 +108,7 @@ func (s *WorkerService) AddPaymentToken(ctx context.Context, payment model.Payme
 	// Check if grpc server is OK
 	_, err := s.circuitBreaker.Execute(func() (interface{}, error) {
 		if s.adapaterGrpc.GrpcClientWorker == nil {
-			return nil, erro.ErroGrpcServer
+			return nil, erro.ErroGrpcServerNill
 		}
 		err := s.adapaterGrpc.GrpcClientWorker.TestConnection(ctx)
 		if err != nil {

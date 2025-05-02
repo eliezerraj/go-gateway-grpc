@@ -25,18 +25,25 @@ var tokenServiceClient	proto.TokenServiceClient
 type AdapaterGrpc struct {
 	GrpcClientWorker	*go_grpc_client.GrpcClientWorker
 	serviceClient		proto.TokenServiceClient
+	StatusGrpcServer	bool
 }
 
 // About create a new worker service
-func NewAdapaterGrpc( grpcClientWorker	*go_grpc_client.GrpcClientWorker ) *AdapaterGrpc{
+func NewAdapaterGrpc(grpcClientWorker *go_grpc_client.GrpcClientWorker) *AdapaterGrpc{
 	childLogger.Info().Str("func","NewAdapaterGrpc").Send()
 
 	// Create a client
 	serviceClient := proto.NewTokenServiceClient(grpcClientWorker.GrcpClient)
+	
+	statusGrpcServer := true
+	if	grpcClientWorker == nil {	
+		statusGrpcServer = false
+	}
 
 	return &AdapaterGrpc{
 		GrpcClientWorker: grpcClientWorker,
 		serviceClient:	serviceClient,
+		StatusGrpcServer: statusGrpcServer,
 	}
 }
 
