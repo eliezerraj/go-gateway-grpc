@@ -2,12 +2,12 @@ package configuration
 
 import(
 	"os"
+	"strconv"
 
 	"github.com/joho/godotenv"
 	go_core_pg "github.com/eliezerraj/go-core/database/pg"
 )
 
-// About get DB env var
 func GetDatabaseEnv() go_core_pg.DatabaseConfig {
 	childLogger.Info().Str("func","GetDatabaseEnv").Send()
 
@@ -17,8 +17,7 @@ func GetDatabaseEnv() go_core_pg.DatabaseConfig {
 	}
 	
 	var databaseConfig	go_core_pg.DatabaseConfig
-	databaseConfig.Db_timeout = 90
-	
+
 	if os.Getenv("DB_HOST") !=  "" {
 		databaseConfig.Host = os.Getenv("DB_HOST")
 	}
@@ -34,16 +33,20 @@ func GetDatabaseEnv() go_core_pg.DatabaseConfig {
 	if os.Getenv("DB_DRIVER") !=  "" {	
 		databaseConfig.Postgres_Driver = os.Getenv("DB_DRIVER")
 	}
+	if os.Getenv("DB_MAX_CONNECTION") !=  "" {
+		intVar, _ := strconv.Atoi(os.Getenv("DB_MAX_CONNECTION"))
+		databaseConfig.DbMax_Connection = intVar
+	}
 
 	// Get Database Secrets
 	file_user, err := os.ReadFile("/var/pod/secret/username")
 	if err != nil {
-		childLogger.Info().Err(err).Send()
+		childLogger.Error().Err(err).Send()
 		os.Exit(3)
 	}
 	file_pass, err := os.ReadFile("/var/pod/secret/password")
 	if err != nil {
-		childLogger.Info().Err(err).Send()
+		childLogger.Error().Err(err).Send()
 		os.Exit(3)
 	}
 	
