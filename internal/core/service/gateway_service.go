@@ -16,6 +16,8 @@ import(
 	"github.com/sony/gobreaker"
 
 	adapter_grpc 	"github.com/go-gateway-grpc/internal/adapter/grpc/client"
+	
+	go_core_pg "github.com/eliezerraj/go-core/database/pg"
 	go_core_observ 	"github.com/eliezerraj/go-core/observability"
 	go_core_api 	"github.com/eliezerraj/go-core/api"
 )
@@ -48,8 +50,9 @@ func NewWorkerService(	workerRepository *database.WorkerRepository,
 }
 
 // About handle/convert http status code
-func errorStatusCode(statusCode int, serviceName string) error{
-	childLogger.Info().Str("func","errorStatusCode").Interface("serviceName", serviceName).Interface("statusCode", statusCode).Send()
+func errorStatusCode(ctx context.Context, statusCode int, serviceName string) error{	
+	childLogger.Info().Str("func","errorStatusCode").Interface("serviceName", serviceName).Interface("statusCode", statusCode).Interface("trace-request-id", ctx.Value("trace-request-id")).Send()
+
 	var err error
 	switch statusCode {
 		case http.StatusUnauthorized:
@@ -63,6 +66,14 @@ func errorStatusCode(statusCode int, serviceName string) error{
 		}
 	return err
 }
+
+// About handle/convert http status code
+func (s *WorkerService) Stat(ctx context.Context) (go_core_pg.PoolStats){
+	childLogger.Info().Str("func","Stat").Interface("trace-resquest-id", ctx.Value("trace-request-id")).Send()
+
+	return s.workerRepository.Stat(ctx)
+}
+
 
 // About get gprc server information pod 
 func (s *WorkerService) GetInfoPodGrpc(ctx context.Context) (*model.InfoPod, error){
@@ -143,8 +154,9 @@ func (s *WorkerService) AddPayment(ctx context.Context, payment model.Payment) (
 
 	// Trace
 	span := tracerProvider.Span(ctx, "service.AddPayment")
-	trace_id := fmt.Sprintf("%v",ctx.Value("trace-request-id"))
 	span.End()
+
+	trace_id := fmt.Sprintf("%v",ctx.Value("trace-request-id"))
 
 	// Get a transactio UUID
 	res_uuid, err := s.workerRepository.GetTransactionUUID(ctx)
@@ -173,7 +185,7 @@ func (s *WorkerService) AddPayment(ctx context.Context, payment model.Payment) (
 															payment)
 	
 	if err != nil {
-		return nil, errorStatusCode(statusCode, s.apiService[1].Name)
+		return nil, errorStatusCode(ctx, statusCode, s.apiService[1].Name)
 	}
 	jsonString, err  := json.Marshal(res_payload)
 	if err != nil {
@@ -191,8 +203,9 @@ func (s *WorkerService) PixTransaction(ctx context.Context, pixTransaction model
 
 	// Trace
 	span := tracerProvider.Span(ctx, "service.PixTransaction")
-	trace_id := fmt.Sprintf("%v",ctx.Value("trace-request-id"))
 	span.End()
+
+	trace_id := fmt.Sprintf("%v",ctx.Value("trace-request-id"))
 
 	// Get a transactio UUID
 	res_uuid, err := s.workerRepository.GetTransactionUUID(ctx)
@@ -215,13 +228,13 @@ func (s *WorkerService) PixTransaction(ctx context.Context, pixTransaction model
 		Headers: &headers,
 	}
 
-	// Send data via grpc
+	// Send data via rest
 	res_payload, statusCode, err := apiService.CallRestApi(	ctx,
 															httpClient, 
 															pixTransaction)
 	
 	if err != nil {
-		return nil, errorStatusCode(statusCode, s.apiService[1].Name)
+		return nil, errorStatusCode(ctx, statusCode, s.apiService[1].Name)
 	}
 	jsonString, err  := json.Marshal(res_payload)
 	if err != nil {
