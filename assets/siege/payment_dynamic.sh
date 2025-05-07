@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # variabels
-export AUTH_TOKEN=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJpc3MiOiJnby1vYXV0aC1sYW1iZGEiLCJ2ZXJzaW9uIjoiMyIsImp3dF9pZCI6IjZjOGNkYjBlLWZkYzctNDBiNy1iYTg5LTk1NDY1MzFhZGVhZSIsInVzZXJuYW1lIjoiYWRtaW4iLCJzY29wZSI6WyJhZG1pbiJdLCJleHAiOjE3NDYyNzUxMjF9.EwN2XWT4BrjqMK2xAJCHtbCGAEi-E40MCyyVKtO20LC1lMRlmktlqC3wZtYRSdpbGARpBwA5RboAfLTzdLRg50MuMxx9gCoubaghErp3zOnvdvgE-zSEgH8HLzJiQEEmj43YoSpAW1H_ZpAP1-QQ8rS_DWNCyrXCu7axXAXmJWli16_n0iIzXaA43066eIdpowoSn7Ho8kb5b0MncY_q0m0IkaTwHnNesMlRXYV5bw472IabMGCQXOPlsw1_zxHDdOys8sDkRlkt52g6R0nqaNg4Q3z7MZ-gZEMu2ENVZwdbkUWE3wf_Yv9PJPRtEdq1e9U8iZyi3NQ-QuSeVhUSwwK_mqn6gxhT2amMUd6cKpSK3O5qiB8qU_erElj-io5EWoHLUh5BSYELR_yjk-cxwuY3kBDJLLF2cke61JWpLb0dFLXxcqJeLjU4tGfLbsfVYYavEMtzblrIxub1C7iR2RdPA48XyISmXGcJrClJAgUGpPBq0JF65isVAjXd2PVEFxx2IMbSDWRtkndRHvUMYasZKeL4xhlWDrh7o7Dd5yfy5Ko29k0GWTQsGR_zTUprpZmerTWA9Aj6md-G8jmqy3k7M_Ac_AGzPFIJTkCvJUX5UA21txrcGs-6tghQv0mASbJ-BY8k3vmhS7SH4pDGHEtUoOpTQMz-CGyZy-spmQg
+#export AUTH_TOKEN=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJpc3MiOiJnby1vYXV0aC1sYW1iZGEiLCJ2ZXJzaW9uIjoiMyIsImp3dF9pZCI6Ijc4NDE3YWI2LTg4YzktNDRkZi1iZjIxLTVhYzI1NTZlNzU1NCIsInVzZXJuYW1lIjoiYWRtaW4iLCJzY29wZSI6WyJhZG1pbiJdLCJleHAiOjE3NDYzNjcxMDh9.K-eWRVfTQXBJ-UA0sbTknbGF6qXBxD9eFbm3r5Q0TxE-uq-c9L-omVyMJ3gUQDAqM_1JDpRa2EiED6uYsOIU0_c4qj6xNm7fU_IkCyDuf0mxghWPfbBpkegj2NhXdQEfNLGC8bSK6037FxGWTWteT_UFtEQR0OKMLaYrI0nbTnIKCNudExeJqcv2yMIYubfLweTe_m40-qZPdganHFKuQn1qZ0kHNDk1jcfIF7nb2zNdNmEZJsmIeqYMCx9kE8hcDSoAcIxklT8Xj0396OloSbNO7H-AqDhCCnYZUeuN15G0n2KhIUvxXKuqDuD96lxdKLo0LOnUaT2YY-Yv4u765tlc1j_AGicbuIs5gbOXjYO2go7ngDxDa050tKR6kEl9ZcpNWF3Nx1UGxeW69KbOOQS00C3STdgRvr8lhjRExrrvd1b00IUuMxGGJ1qcudZDxSkhJv7onXrB387EyBAD2iIn8U-xNUIJK8y3VGRUw7ZeD3NsTxV2jy7bXZk6v4Cs3SOcmigRTAOwe_XcZrRlonhhxZDhjezuM4j20V6Uy3EJAghhI0pOZYwIO3C4aSafjS6A1KpSl_KO2UqPyXqHYTIVA5VOUxOMpvdrtBwZ205qNGYMiCzv9A6DIr1TlUPzvwI3qWbS43eR-KikuE7vzWnO1hmtlRT8XAgtf3_4_RU
 
 export URL_POST=https://go-global.architecture.caradhras.io/gateway-grpc/payment
 
-RANDOM_PAN=$((RANDOM % 200 + 100))
+RANDOM_PAN=$((RANDOM % 900 + 100))
 RANDOM_PRICE=$((RANDOM % 130 + 20))
 
 PAN=111111000001
@@ -15,7 +15,7 @@ FINAL_PAN="${PAN_TMP:0:3}"."${PAN_TMP:3:3}"."${PAN_TMP:6:3}"."${PAN_TMP:9:3}"
 echo '{"card_number": "'$FINAL_PAN'","card_type": "CREDIT","terminal": "TERM-1","mcc": "FOOD","currency": "BRL","amount": '$RANDOM_PRICE'}'
 
 # POST request
-curl -s -X POST "$URL_POST" \
+curl -s -i -X POST "$URL_POST" \
 	--header "Content-Type: application/json" \
 	--header "Authorization: $AUTH_TOKEN" \
-	--data '{"card_number": "'$FINAL_PAN'","card_type": "CREDIT","terminal": "TERM-1","mcc": "FOOD","currency": "BRL","amount": '$RANDOM_PRICE'}'
+	--data '{"card_number": "'$FINAL_PAN'","card_type": "CREDIT","terminal": "TERM-1","mcc": "FOOD","currency": "BRL","amount": '$RANDOM_PRICE'}' | grep "^HTTP\/"
