@@ -17,6 +17,8 @@ import(
 	adapter_grpc "github.com/go-gateway-grpc/internal/adapter/grpc/client"
 
 	go_core_pg "github.com/eliezerraj/go-core/database/pg"
+	go_core_api "github.com/eliezerraj/go-core/api"
+
 	go_grpc_client_worker "github.com/eliezerraj/go-core/grpc"	
 )
 
@@ -90,9 +92,16 @@ func main()  {
 		adapaterGrpc = *adapter_grpc.NewAdapaterGrpc(goCoreGrpcClientWorker)
 	}
 
+	// Create a go-core api service for client http
+	coreRestApiService := go_core_api.NewRestApiService()
+
 	// create and wire
 	database := database.NewWorkerRepository(&databasePGServer)
-	workerService := service.NewWorkerService(database, appServer.ApiService, &adapaterGrpc )
+	workerService := service.NewWorkerService(*coreRestApiService, 
+												database, 
+												appServer.
+												ApiService, 
+												&adapaterGrpc )
 
 	httpRouters := api.NewHttpRouters(workerService)
 	httpServer := server.NewHttpAppServer(appServer.Server)
