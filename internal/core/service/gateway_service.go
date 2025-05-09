@@ -27,6 +27,7 @@ var tracerProvider 	go_core_observ.TracerProvider
 var apiService 		go_core_api.ApiService
 
 type WorkerService struct {
+	goCoreRestApiService	go_core_api.ApiService
 	workerRepository 	*database.WorkerRepository
 	apiService			[]model.ApiService
 	adapaterGrpc		*adapter_grpc.AdapaterGrpc
@@ -34,7 +35,8 @@ type WorkerService struct {
 }
 
 // About create a new worker service
-func NewWorkerService(	workerRepository *database.WorkerRepository,
+func NewWorkerService(	goCoreRestApiService	go_core_api.ApiService,	
+						workerRepository *database.WorkerRepository,
 						apiService		[]model.ApiService,
 						adapaterGrpc	*adapter_grpc.AdapaterGrpc ) *WorkerService{
 	childLogger.Info().Str("func","NewWorkerService").Send()
@@ -42,6 +44,7 @@ func NewWorkerService(	workerRepository *database.WorkerRepository,
 	cb := cb.CircuitBreakerConfig()
 
 	return &WorkerService{
+		goCoreRestApiService: goCoreRestApiService,
 		workerRepository: workerRepository,
 		apiService: apiService,
 		adapaterGrpc: adapaterGrpc,
@@ -180,9 +183,10 @@ func (s *WorkerService) AddPayment(ctx context.Context, payment model.Payment) (
 	}
 
 	// Send data via grpc
-	res_payload, statusCode, err := apiService.CallRestApi(	ctx,
-															httpClient, 
-															payment)
+	res_payload, statusCode, err := apiService.CallRestApiV1(	ctx,
+																s.goCoreRestApiService.Client,
+																httpClient, 
+																payment)
 	
 	if err != nil {
 		return nil, errorStatusCode(ctx, statusCode, s.apiService[1].Name)
@@ -229,9 +233,10 @@ func (s *WorkerService) PixTransaction(ctx context.Context, pixTransaction model
 	}
 
 	// Send data via rest
-	res_payload, statusCode, err := apiService.CallRestApi(	ctx,
-															httpClient, 
-															pixTransaction)
+	res_payload, statusCode, err := apiService.CallRestApiV1(	ctx,
+																s.goCoreRestApiService.Client,
+																httpClient, 
+																pixTransaction)
 	
 	if err != nil {
 		return nil, errorStatusCode(ctx, statusCode, s.apiService[1].Name)
