@@ -1,11 +1,11 @@
 SHELL=/bin/bash
 
 # Define environment variables
-export AUTH_TOKEN=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJpc3MiOiJnby1vYXV0aC1sYW1iZGEiLCJ2ZXJzaW9uIjoiMyIsImp3dF9pZCI6ImUzYWQ2ZWI3LWUwM2EtNGM4Yi1hNDU5LTkwOGU1ZDc5Y2I1NyIsInVzZXJuYW1lIjoiYWRtaW4iLCJzY29wZSI6WyJhZG1pbiJdLCJleHAiOjE3NDcwNDIzNDl9.Ycg0ZEyMe8pMGfStFLGWscZKaNm-n4zMZ0sP_qEw3kb0aBTcepE58mf5a2dMcxNTorpceuZcKGamjt0JpZxhonifxpChCSxSC90_0dHwqGh0awwJfh3yAW_WvOQjwbQi-FbHtf3jcrMysHMgnW3VY4tok-rycqKTv6111DJKa7qINmsjljJv6M9pV8hGIxtt9FawS4rKxtNxo-xyYhoahtMxJgK2jKAum834-6Y3oBoxVmJw28dJq-ZjbAN7dkhZSmIPtl8Xk-0DZBGXX2HlkTsS3tzCYNLeU3CE3WOhQKS5W6ZvRphO_zYcBh-8yNRyb-Ai7bnMtyfHE6nhlCPFvZpg4EL49VVh9RJrP2tMLKnB27pMu2LyIc980AKabO-JBiYqR47pGS1_lclBPnA94GJ3_MqSrmVvkHOiKz5W6e5nQEVkDpjuVpDpgJfcxy-k5R7ywJXMzEN6YTLdg-hAiMpLEf6M_fg-6X1fTs2rMOJINpi9vGfsEbzSt_oIvzQhRsFp4MEn_mAvpEt_kPGwfZmQiJjtIl5Keiimla_hSg0oqBgVWXUxTklavvrvhCS3O9xkheblX6aVXUX9Gwp2nk9ai_Fi30y1BNuKHiESXhbwQjwuMZXPt2Kij_f2krH9pf9PKJMd3wgjTo3FWlXsUuRuhNfd_bLEkXVJR_gKn4M
+export AUTH_TOKEN=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJpc3MiOiJnby1vYXV0aC1sYW1iZGEiLCJ2ZXJzaW9uIjoiMyIsImp3dF9pZCI6IjVmODMwNjc0LWIzNjEtNDljZS1hMmMzLTc5MzkyYTE1OTQ5NSIsInVzZXJuYW1lIjoiYWRtaW4iLCJzY29wZSI6WyJhZG1pbiJdLCJleHAiOjE3NDcyMDEzMDZ9.mEtRr2BPkuQZEK5VNj_SmVUFom2h4GovFlmGH5xGDz5Ne8ehOfQHEYmuQzejY_vgtwYnyej17UXZ0ev8ohg5wfu9uPwxwyMfbAOlYmCIPudqVfgmlgCuli10kjHsqsTb073nz6lzbeYZETX6WQKJB3Rh9r16_bpPju1NB1fqnxKCpJ-Auzgps_MKUqPDWOkvlQ3biMjWwsYOf7KY0bePF4_OXkOW88lK6GuSYU9KKDB1IOvRzUyCWOU2Olp7dksWsZE4ykHozuL_SEKQOaH89YxoR7JyyKDPq7bVv95HlHQtzoRWTL239KwXRYbDY85LjVyt6bdxE5PrLWMvT4qVu1pybGYM2t0e_SPLgaSL4-cXdJq7L5zSr0NZtrcaasF16NnP50hA-_lQALPuJ8O4RhWB_kwBMgcdgocu1XPvWrIQaknIeE8E-L6Y0NCPzOBD7KJCMO_ZUkQKbkILitjLQ2X01st5A-uWSWUoVOmKBJSo1C0O3urx36OSGepzuwAPvx1cq0aQCj_o_-7a_3E5mI7E3aBeqSkmriyrQ6W79r7ex1hNn3eU9R_PK2Wu7Ujn-bzApcLHjHK7AA23D5C0pwgV2RdgQyh3UWa5NPQJWM805hqqgylAk-clYe4bmXu5oLdvbsNeP-qVXlGamxjp1ENtrjMjyahU8_zO509ky9Q
 
-export URL_POST_PIX=https://go-global2.architecture.caradhras.io/gateway-grpc/pixTransaction
-export URL_POST_PAYMENT=https://go-global2.architecture.caradhras.io/gateway-grpc/payment
-export URL_POST_TOKEN=https://go-global2.architecture.caradhras.io/gateway-grpc/paymentToken
+#export URL_POST_PIX=https://go-global.architecture.caradhras.io/gateway-grpc/pixTransaction
+#export URL_POST_PAYMENT=https://go-global.architecture.caradhras.io/gateway-grpc/payment
+#export URL_POST_TOKEN=https://go-global.architecture.caradhras.io/gateway-grpc/paymentToken
 
 # Default target
 all: env
@@ -20,14 +20,14 @@ load_all:
 	@echo "Run load all ..."
 
 	@for ((i=0; i<=1000; i++)); do \
+		echo "------ LEDGER ------------"; \
+		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/ledger_dynamic.sh"; \
 		echo "------ PIX ------------"; \
 		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/pix_dynamic.sh"; \
 		echo "------ PAYMENT ------------"; \
 		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/payment_dynamic.sh"; \
 		echo "------ TOKEN ------------"; \
 		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/token_dynamic.sh"; \
-		echo "------ LEDGER ------------"; \
-		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/ledger_dynamic.sh"; \
 		echo "------ CARD ------------"; \
 		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/card_dynamic.sh"; \
 	done
