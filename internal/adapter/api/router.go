@@ -175,6 +175,12 @@ func (h *HttpRouters) PixTransaction(rw http.ResponseWriter, req *http.Request) 
 		core_apiError = core_apiError.NewAPIError(err, trace_id, http.StatusBadRequest)
 		return &core_apiError
     }
+
+	// use the transaction_id if it was informed - this scenario is used to test the idepontent key (valkey go-ledger-worker)
+	if len(req.Header.Values("transaction_id")) > 0 {
+		pixTransaction.TransactionId = req.Header.Values("transaction_id")[0]
+	}
+
 	defer req.Body.Close()
 
 	res, err := h.workerService.PixTransaction(req.Context(), pixTransaction)
