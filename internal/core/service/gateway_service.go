@@ -201,7 +201,7 @@ func (s *WorkerService) AddPayment(ctx context.Context, payment model.Payment) (
 	return &payment_parsed, nil
 }
 
-// About payment via plain card (REST)
+// About payment via pix (REST)
 func (s *WorkerService) PixTransaction(ctx context.Context, pixTransaction model.PixTransaction) (*model.PixTransaction, error){
 	childLogger.Info().Str("func","PixTransaction").Interface("trace-request-id", ctx.Value("trace-request-id")).Interface("pixTransaction", pixTransaction).Send()
 
@@ -211,12 +211,14 @@ func (s *WorkerService) PixTransaction(ctx context.Context, pixTransaction model
 
 	trace_id := fmt.Sprintf("%v",ctx.Value("trace-request-id"))
 
-	// Get a transactio UUID
-	res_uuid, err := s.workerRepository.GetTransactionUUID(ctx)
-	if err != nil {
-		return nil, err
+	// Create a transaction UUID
+	if pixTransaction.TransactionId == "" {
+		res_uuid, err := s.workerRepository.GetTransactionUUID(ctx)
+		if err != nil {
+			return nil, err
+		}
+		pixTransaction.TransactionId = *res_uuid
 	}
-	pixTransaction.TransactionId = *res_uuid
 
 	// Set headers
 	headers := map[string]string{
