@@ -26,7 +26,7 @@ Parameters:
       "$context.status", "integRespCode": "$context.integrationStatus", "reqTime":"$context.requestTimeEpoch",
       "resourcePath": "$context.resourcePath", "apiId": "$context.apiId", "appClient":
       "$context.authorizer.principalId", "jwtId": "$context.authorizer.jwt_id",
-      "authLatency": "$context.authorizer.latency"}'
+      "authLatency": "$context.authorizer.latency", "transaction-id":"$context.transaction-id"}'
   ApiPublicName:
     Type: String
     Default: go-gateway-grpc
@@ -148,6 +148,7 @@ Resources:
                   integration.request.header.client-id: context.authorizer.tenant_id
                   integration.request.header.X-Forwarded-For: context.identity.sourceIp
                   integration.request.header.jwt-id: context.authorizer.jwt_id
+                  integration.request.header.transaction-id: context.transaction-id
               security:
               - authorizer: []
             post:
@@ -174,6 +175,7 @@ Resources:
                   integration.request.header.client-id: context.authorizer.tenant_id
                   integration.request.header.X-Forwarded-For: context.identity.sourceIp
                   integration.request.header.jwt-id: context.authorizer.jwt_id
+                  integration.request.header.transaction-id: context.transaction-id
               security:
               - authorizer: []
         x-amazon-apigateway-api-key-source: AUTHORIZER

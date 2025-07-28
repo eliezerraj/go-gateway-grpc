@@ -177,8 +177,8 @@ func (h *HttpRouters) PixTransaction(rw http.ResponseWriter, req *http.Request) 
     }
 
 	// use the transaction_id if it was informed - this scenario is used to test the idepontent key (valkey go-ledger-worker)
-	if len(req.Header.Values("transaction_id")) > 0 {
-		pixTransaction.TransactionId = req.Header.Values("transaction_id")[0]
+	if len(req.Header.Values("transaction-id")) > 0 {
+		pixTransaction.TransactionId = req.Header.Values("transaction-id")[0]
 	}
 
 	defer req.Body.Close()
