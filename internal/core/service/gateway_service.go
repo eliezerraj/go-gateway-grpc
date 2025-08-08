@@ -17,9 +17,10 @@ import(
 
 	adapter_grpc 	"github.com/go-gateway-grpc/internal/adapter/grpc/client"
 	
-	go_core_pg "github.com/eliezerraj/go-core/database/pg"
-	go_core_observ 	"github.com/eliezerraj/go-core/observability"
-	go_core_api 	"github.com/eliezerraj/go-core/api"
+	go_core_grpc_client_worker "github.com/eliezerraj/go-core/grpc"
+	go_core_pg 	"github.com/eliezerraj/go-core/database/pg"
+	go_core_observ "github.com/eliezerraj/go-core/observability"
+	go_core_api "github.com/eliezerraj/go-core/api"
 )
 
 var childLogger = log.With().Str("component","go-gateway-grpc").Str("package","internal.core.service").Logger()
@@ -27,11 +28,27 @@ var tracerProvider 	go_core_observ.TracerProvider
 var apiService 		go_core_api.ApiService
 
 type WorkerService struct {
-	goCoreRestApiService	go_core_api.ApiService
-	workerRepository 	*database.WorkerRepository
-	apiService			[]model.ApiService
-	adapaterGrpc		*adapter_grpc.AdapaterGrpc
-	circuitBreaker		*gobreaker.CircuitBreaker
+	goCoreRestApiService 	go_core_api.ApiService
+	workerRepository 		*database.WorkerRepository
+	apiService				[]model.ApiService
+	adapaterGrpc			*adapter_grpc.AdapaterGrpc
+	circuitBreaker			*gobreaker.CircuitBreaker
+}
+
+// About StartGrpcServer 
+func (s *WorkerService) StartGrpcServer(ctx context.Context){
+	childLogger.Info().Str("func","StartGrpcServer").Interface("trace-request-id", ctx.Value("trace-request-id")).Send()
+	
+	var goCoreGrpcClientWorker go_core_grpc_client_worker.GrpcClientWorker
+
+	goCoreGrpcClient, err := goCoreGrpcClientWorker.StartGrpcClient(s.apiService[0].Url)
+	if err != nil {
+		childLogger.Error().Err(err).Msg(fmt.Sprintf("RESTART grpc server FAILED: %v %v",s.apiService[0].Name, s.apiService[0].Url ))
+	} else {
+		adapaterGrpc := *adapter_grpc.NewAdapaterGrpc(goCoreGrpcClient)
+		s.adapaterGrpc = &adapaterGrpc
+		childLogger.Info().Str("func","GetInfoPodGrpc").Msg("GRPC server start SUCESSFUL !!!")
+	}
 }
 
 // About create a new worker service
@@ -77,7 +94,6 @@ func (s *WorkerService) Stat(ctx context.Context) (go_core_pg.PoolStats){
 	return s.workerRepository.Stat(ctx)
 }
 
-
 // About get gprc server information pod 
 func (s *WorkerService) GetInfoPodGrpc(ctx context.Context) (*model.InfoPod, error){
 	childLogger.Info().Str("func","GetInfoPodGrpc").Interface("trace-request-id", ctx.Value("trace-request-id")).Send()
@@ -99,6 +115,7 @@ func (s *WorkerService) GetInfoPodGrpc(ctx context.Context) (*model.InfoPod, err
 	})
 
 	if (err != nil) {
+		s.StartGrpcServer(ctx)
 		return nil, err
 	}
 
@@ -132,6 +149,7 @@ func (s *WorkerService) AddPaymentToken(ctx context.Context, payment model.Payme
 	})
 
 	if (err != nil) {
+		s.StartGrpcServer(ctx)
 		return nil, err
 	}
 
