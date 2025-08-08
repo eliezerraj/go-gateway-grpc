@@ -19,7 +19,7 @@ import(
 	go_core_pg "github.com/eliezerraj/go-core/database/pg"
 	go_core_api "github.com/eliezerraj/go-core/api"
 
-	go_grpc_client_worker "github.com/eliezerraj/go-core/grpc"	
+	go_core_grpc_client_worker "github.com/eliezerraj/go-core/grpc"	
 )
 
 var(
@@ -27,7 +27,7 @@ var(
 	appServer	model.AppServer
 	databaseConfig go_core_pg.DatabaseConfig
 	databasePGServer go_core_pg.DatabasePGServer
-	goCoreGrpcClientWorker go_grpc_client_worker.GrpcClientWorker
+	goCoreGrpcClientWorker go_core_grpc_client_worker.GrpcClientWorker
 	childLogger = log.With().Str("component","go-gateway-grpc").Str("package", "main").Logger()
 )
 
