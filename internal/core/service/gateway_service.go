@@ -70,7 +70,7 @@ func NewWorkerService(	goCoreRestApiService	go_core_api.ApiService,
 }
 
 // About handle/convert http status code
-func errorStatusCode(ctx context.Context, statusCode int, serviceName string) error{	
+func errorStatusCode(ctx context.Context, statusCode int, serviceName string, msg_err error) error{	
 	childLogger.Info().Str("func","errorStatusCode").Interface("serviceName", serviceName).Interface("statusCode", statusCode).Interface("trace-request-id", ctx.Value("trace-request-id")).Send()
 
 	var err error
@@ -82,7 +82,7 @@ func errorStatusCode(ctx context.Context, statusCode int, serviceName string) er
 		case http.StatusNotFound:
 			err = erro.ErrNotFound
 		default:
-			err = errors.New(fmt.Sprintf("service %s in outage", serviceName))
+			err = errors.New(fmt.Sprintf("service %s in outage => cause error: %s", serviceName, msg_err.Error() ))
 		}
 	return err
 }
@@ -207,7 +207,7 @@ func (s *WorkerService) AddPayment(ctx context.Context, payment model.Payment) (
 																payment)
 	
 	if err != nil {
-		return nil, errorStatusCode(ctx, statusCode, s.apiService[1].Name)
+		return nil, errorStatusCode(ctx, statusCode, s.apiService[1].Name, err)
 	}
 	jsonString, err  := json.Marshal(res_payload)
 	if err != nil {
@@ -259,7 +259,7 @@ func (s *WorkerService) PixTransaction(ctx context.Context, pixTransaction model
 																pixTransaction)
 	
 	if err != nil {
-		return nil, errorStatusCode(ctx, statusCode, s.apiService[1].Name)
+		return nil, errorStatusCode(ctx, statusCode, s.apiService[1].Name, err)
 	}
 	jsonString, err  := json.Marshal(res_payload)
 	if err != nil {
