@@ -14,57 +14,57 @@ FINAL_PAN="${PAN_TMP:0:3}"."${PAN_TMP:3:3}"."${PAN_TMP:6:3}"."${PAN_TMP:9:3}"
 #echo '{"card_number": "'$FINAL_PAN'","card_type": "CREDIT","terminal": "TERM-1","mcc": "FOOD","currency": "BRL","amount": '$RANDOM_PRICE'}'
 
 # POST request
-STATUS_CODE=$(curl -s -i -X POST "$URL_POST" \
+STATUS_CODE=$(curl -s -w " HTTP:%{http_code}" "$URL_POST" \
 	--header "Content-Type: application/json" \
 	--header "Authorization: $AUTH_TOKEN" \
-	--data '{"card_number": "'$FINAL_PAN'","card_type": "CREDIT","terminal": "TERM-1","mcc": "FOOD","currency": "BRL","amount": '$RANDOM_PRICE'}' | grep "^HTTP\/")
+	--data '{"card_number": "'$FINAL_PAN'","card_type": "CREDIT","terminal": "TERM-1","mcc": "FOOD","currency": "BRL","amount": '$RANDOM_PRICE'}')
 
-if echo "$STATUS_CODE" | grep -q "200"; then
-  echo "$STATUS_CODE"
+if echo "$STATUS_CODE" | grep -q "HTTP:200"; then
+  echo "HTTP:200"
 else
-  echo "  ERROR =====> $STATUS_CODE  "
+  echo "ERROR ====> $STATUS_CODE"
 fi
 
-STATUS_CODE=$(curl -s -i -X POST "$URL_POST" \
+STATUS_CODE=$(curl -s -w " HTTP:%{http_code}" "$URL_POST" \
 	--header "Content-Type: application/json" \
 	--header "Authorization: $AUTH_TOKEN" \
-	--data '{"card_number": "'$FINAL_PAN'","card_type": "CREDIT","terminal": "TERM-1","mcc": "FOOD","currency": "BRL","amount": '$RANDOM_PRICE'}' | grep "^HTTP\/")
+	--data '{"card_number": "'$FINAL_PAN'","card_type": "CREDIT","terminal": "TERM-1","mcc": "FOOD","currency": "BRL","amount": '$RANDOM_PRICE'}')
 
-if echo "$STATUS_CODE" | grep -q "200"; then
-  echo "$STATUS_CODE"
+if echo "$STATUS_CODE" | grep -q "HTTP:200"; then
+  echo "HTTP:200"
 else
-  echo "  ERROR =====> $STATUS_CODE  "
+  echo "ERROR ====> $STATUS_CODE"
 fi
 
-STATUS_CODE=$(curl -s -i -X POST "$URL_POST" \
+STATUS_CODE=$(curl -s -w " HTTP:%{http_code}" "$URL_POST" \
 	--header "Content-Type: application/json" \
 	--header "Authorization: $AUTH_TOKEN" \
-	--data '{"card_number": "'$FINAL_PAN'","card_type": "CREDIT","terminal": "TERM-1","mcc": "FOOD","currency": "BRL","amount": '$RANDOM_PRICE'}' | grep "^HTTP\/")
+	--data '{"card_number": "'$FINAL_PAN'","card_type": "CREDIT","terminal": "TERM-1","mcc": "FOOD","currency": "BRL","amount": '$RANDOM_PRICE'}')
 
-if echo "$STATUS_CODE" | grep -q "200"; then
-  echo "$STATUS_CODE"
+if echo "$STATUS_CODE" | grep -q "HTTP:200"; then
+  echo "HTTP:200"
 else
-  echo "  ERROR =====> $STATUS_CODE  "
+  echo "ERROR ====> $STATUS_CODE"
 fi
 
-STATUS_CODE=$(curl -s -i -X POST "$URL_POST" \
+STATUS_CODE=$(curl -s -w " HTTP:%{http_code}" "$URL_POST" \
 	--header "Content-Type: application/json" \
 	--header "Authorization: $AUTH_TOKEN" \
-	--data '{"card_number": "'$FINAL_PAN'","card_type": "CREDIT","terminal": "TERM-1","mcc": "FOOD","currency": "BRL","amount": '$RANDOM_PRICE'}' | grep "^HTTP\/")
+	--data '{"card_number": "'$FINAL_PAN'","card_type": "CREDIT","terminal": "TERM-1","mcc": "FOOD","currency": "BRL","amount": '$RANDOM_PRICE'}')
 
-if echo "$STATUS_CODE" | grep -q "200"; then
-  echo "$STATUS_CODE"
+if echo "$STATUS_CODE" | grep -q "HTTP:200"; then
+  echo "HTTP:200"
 else
-  echo "  ERROR =====> $STATUS_CODE  "
+  echo "ERROR ====> $STATUS_CODE"
 fi
 
-STATUS_CODE=$(curl -s -i -X POST "$URL_POST" \
+STATUS_CODE=$(curl -s -w " HTTP:%{http_code}" "$URL_POST" \
 	--header "Content-Type: application/json" \
 	--header "Authorization: $AUTH_TOKEN" \
-	--data '{"card_number": "'$FINAL_PAN'","card_type": "CREDIT","terminal": "TERM-1","mcc": "FOOD","currency": "BRL","amount": '$RANDOM_PRICE'}' | grep "^HTTP\/")
+	--data '{"card_number": "'$FINAL_PAN'","card_type": "CREDIT","terminal": "TERM-1","mcc": "FOOD","currency": "BRL","amount": '$RANDOM_PRICE'}')
 
-if echo "$STATUS_CODE" | grep -q "200"; then
-  echo "$STATUS_CODE"
+if echo "$STATUS_CODE" | grep -q "HTTP:200"; then
+  echo "HTTP:200"
 else
-  echo "  ERROR =====> $STATUS_CODE  "
+  echo "ERROR ====> $STATUS_CODE"
 fi
