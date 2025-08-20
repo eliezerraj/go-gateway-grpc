@@ -10,57 +10,52 @@ RANDOM_ACC=$((RANDOM % 999 + 1))
 #echo "'$URL_POST'?account-id=ACC-'$RANDOM_ACC'&date_start=2025-04-07"
 
 # POST request
-STATUS_CODE=$(curl -s -i -X GET ''$URL_POST'?account-id=ACC-'$RANDOM_ACC'&date_start=2025-04-07' \
+STATUS_CODE=$(curl -s -w " HTTP:%{http_code}" ''$URL_POST'?account-id=ACC-'$RANDOM_ACC'&date_start=2025-04-07' \
           --header "Content-Type: application/json" \
-          --header "Authorization: $AUTH_TOKEN" | grep "^HTTP\/"\
-          )
+          --header "Authorization: $AUTH_TOKEN")
 
-if echo "$STATUS_CODE" | grep -q "200"; then
-  echo "$STATUS_CODE"
+if echo "$STATUS_CODE" | grep -q "HTTP:200"; then
+  echo "HTTP:200"
 else
-  echo "  ERROR =====> $STATUS_CODE  "
+  echo "ERROR ====> $STATUS_CODE"
 fi
 
-STATUS_CODE=$(curl -s -i -X GET ''$URL_POST'?account-id=ACC-'$RANDOM_ACC'&date_start=2025-04-07' \
+STATUS_CODE=$(curl -s -w " HTTP:%{http_code}" ''$URL_POST'?account-id=ACC-'$RANDOM_ACC'&date_start=2025-04-07' \
           --header "Content-Type: application/json" \
-          --header "Authorization: $AUTH_TOKEN" | grep "^HTTP\/"\
-          )
+          --header "Authorization: $AUTH_TOKEN")
 
-if echo "$STATUS_CODE" | grep -q "200"; then
-  echo "$STATUS_CODE"
+if echo "$STATUS_CODE" | grep -q "HTTP:200"; then
+  echo "HTTP:200"
 else
-  echo "  ERROR =====> $STATUS_CODE  "
+  echo "ERROR ====> $STATUS_CODE"
 fi
 
-STATUS_CODE=$(curl -s -i -X GET ''$URL_POST'?account-id=ACC-'$RANDOM_ACC'&date_start=2025-04-07' \
+STATUS_CODE=$(curl -s -w " HTTP:%{http_code}" ''$URL_POST'?account-id=ACC-'$RANDOM_ACC'&date_start=2025-04-07' \
           --header "Content-Type: application/json" \
-          --header "Authorization: $AUTH_TOKEN" | grep "^HTTP\/"\
-          )
+          --header "Authorization: $AUTH_TOKEN")
 
-if echo "$STATUS_CODE" | grep -q "200"; then
-  echo "$STATUS_CODE"
+if echo "$STATUS_CODE" | grep -q "HTTP:200"; then
+  echo "HTTP:200"
 else
-  echo "  ERROR =====> $STATUS_CODE  "
+  echo "ERROR ====> $STATUS_CODE"
 fi
 
-STATUS_CODE=$(curl -s -i -X GET ''$URL_POST'?account-id=ACC-'$RANDOM_ACC'&date_start=2025-04-07' \
+STATUS_CODE=$(curl -s -w " HTTP:%{http_code}" ''$URL_POST'?account-id=ACC-'$RANDOM_ACC'&date_start=2025-04-07' \
           --header "Content-Type: application/json" \
-          --header "Authorization: $AUTH_TOKEN" | grep "^HTTP\/"\
-          )
+          --header "Authorization: $AUTH_TOKEN")
 
-if echo "$STATUS_CODE" | grep -q "200"; then
-  echo "$STATUS_CODE"
+if echo "$STATUS_CODE" | grep -q "HTTP:200"; then
+  echo "HTTP:200"
 else
-  echo "  ERROR =====> $STATUS_CODE  "
+  echo "ERROR ====> $STATUS_CODE"
 fi
 
-STATUS_CODE=$(curl -s -i -X GET ''$URL_POST'?account-id=ACC-'$RANDOM_ACC'&date_start=2025-04-07' \
+STATUS_CODE=$(curl -s -w " HTTP:%{http_code}" ''$URL_POST'?account-id=ACC-'$RANDOM_ACC'&date_start=2025-04-07' \
           --header "Content-Type: application/json" \
-          --header "Authorization: $AUTH_TOKEN" | grep "^HTTP\/"\
-          )
+          --header "Authorization: $AUTH_TOKEN")
 
-if echo "$STATUS_CODE" | grep -q "200"; then
-  echo "$STATUS_CODE"
+if echo "$STATUS_CODE" | grep -q "HTTP:200"; then
+  echo "HTTP:200"
 else
-  echo "  ERROR =====> $STATUS_CODE  "
+  echo "ERROR ====> $STATUS_CODE"
 fi

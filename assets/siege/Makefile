@@ -19,17 +19,17 @@ env:
 load_all:
 	@echo "Run load all ..."
 
-	@for ((i=0; i<=100000; i++)); do \
-		echo "------ LEDGER ------------"; \
-		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/ledger_dynamic.sh"; \
-		echo "------ PIX ------------"; \
-		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/pix_dynamic.sh"; \
-		echo "------ PAYMENT ------------"; \
-		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/payment_dynamic.sh"; \
-		echo "------ TOKEN ------------"; \
-		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/token_dynamic.sh"; \
-		echo "------ CARD ------------"; \
-		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/card_dynamic.sh"; \
+	@for ((i=0; i<=1000000; i++)); do \
+		echo "--- LEDGER (ledger/movimentStatement) ---"; \
+		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/ledger_dynamic_v2.sh"; \
+		echo "--- PIX (gateway-grpc/pixTransaction) ---"; \
+		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/pix_dynamic_v2.sh"; \
+		echo "--- PAYMENT (gateway-grpc/payment) ---"; \
+		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/payment_dynamic_v2.sh"; \
+		echo "--- TOKEN (gateway-grpc/paymentToken) ---"; \
+		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/token_dynamic_v2.sh"; \
+		echo "--- CARD (card/cardToken) ---"; \
+		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/card_dynamic_v2.sh"; \
 	done
 
 load_pix:
