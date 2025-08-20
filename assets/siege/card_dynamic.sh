@@ -32,7 +32,7 @@ STATUS_CODE=$(curl -s -i -X POST "$URL_POST" \
 if echo "$STATUS_CODE" | grep -q "200"; then
   echo "$STATUS_CODE"
 else
-  echo "ERROR =========================> $STATUS_CODE  "
+  echo "  ERROR =====================> $STATUS_CODE  "
 fi
 
 STATUS_CODE=$(curl -s -i -X POST "$URL_POST" \
@@ -43,7 +43,7 @@ STATUS_CODE=$(curl -s -i -X POST "$URL_POST" \
 if echo "$STATUS_CODE" | grep -q "200"; then
   echo "$STATUS_CODE"
 else
-  echo "ERROR =========================> $STATUS_CODE  "
+  echo "  ERROR =====================> $STATUS_CODE  "
 fi
 
 STATUS_CODE=$(curl -s -i -X POST "$URL_POST" \
@@ -54,7 +54,7 @@ STATUS_CODE=$(curl -s -i -X POST "$URL_POST" \
 if echo "$STATUS_CODE" | grep -q "200"; then
   echo "$STATUS_CODE"
 else
-  echo "ERROR =========================> $STATUS_CODE  "
+  echo "  ERROR =====================> $STATUS_CODE  "
 fi
 
 STATUS_CODE=$(curl -s -i -X POST "$URL_POST" \
@@ -65,5 +65,5 @@ STATUS_CODE=$(curl -s -i -X POST "$URL_POST" \
 if echo "$STATUS_CODE" | grep -q "200"; then
   echo "$STATUS_CODE"
 else
-  echo "ERROR =========================> $STATUS_CODE  "
+  echo "  ERROR =====================> $STATUS_CODE  "
 fi
