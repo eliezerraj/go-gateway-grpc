@@ -33,6 +33,12 @@ func GetEndpointEnv() []model.ApiService {
 	if os.Getenv("HOST_SERVICE_00") !=  "" {
 		apiService00.HostName = os.Getenv("HOST_SERVICE_00")
 	}
+	if os.Getenv("CLIENT_HTTP_TIMEOUT_00") !=  "" {
+		intVar, _ := strconv.Atoi(os.Getenv("CLIENT_HTTP_TIMEOUT_00"))	
+		apiService00.HttpTimeout = time.Duration(intVar) * time.Second
+	} else {
+		apiService00.HttpTimeout =(5 * time.Second) // default
+	}
 	apiService = append(apiService, apiService00)
 
 	var apiService01 model.ApiService
@@ -50,6 +56,12 @@ func GetEndpointEnv() []model.ApiService {
 	}
 	if os.Getenv("HOST_SERVICE_01") !=  "" {
 		apiService01.HostName = os.Getenv("HOST_SERVICE_01")
+	}
+	if os.Getenv("CLIENT_HTTP_TIMEOUT_01") !=  "" {
+		intVar, _ := strconv.Atoi(os.Getenv("CLIENT_HTTP_TIMEOUT_01"))	
+		apiService01.HttpTimeout = time.Duration(intVar) * time.Second
+	} else {
+		apiService01.HttpTimeout =(5 * time.Second) // default
 	}
 	apiService = append(apiService, apiService01)
 
@@ -69,6 +81,12 @@ func GetEndpointEnv() []model.ApiService {
 	if os.Getenv("HOST_SERVICE_02") !=  "" {
 		apiService02.HostName = os.Getenv("HOST_SERVICE_02")
 	}
+	if os.Getenv("CLIENT_HTTP_TIMEOUT_02") !=  "" {
+		intVar, _ := strconv.Atoi(os.Getenv("CLIENT_HTTP_TIMEOUT_02"))	
+		apiService02.HttpTimeout = time.Duration(intVar) * time.Second
+	} else {
+		apiService02.HttpTimeout =(5 * time.Second) // default
+	}
 	apiService = append(apiService, apiService02)
 
 	var apiService03 model.ApiService
@@ -86,6 +104,12 @@ func GetEndpointEnv() []model.ApiService {
 	}
 	if os.Getenv("HOST_SERVICE_03") !=  "" {
 		apiService03.HostName = os.Getenv("HOST_SERVICE_03")
+	}
+	if os.Getenv("CLIENT_HTTP_TIMEOUT_03") !=  "" {
+		intVar, _ := strconv.Atoi(os.Getenv("CLIENT_HTTP_TIMEOUT_03"))	
+		apiService03.HttpTimeout = time.Duration(intVar) * time.Second
+	} else {
+		apiService03.HttpTimeout =(5 * time.Second) // default
 	}
 	apiService = append(apiService, apiService03)
 

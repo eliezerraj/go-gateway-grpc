@@ -196,7 +196,7 @@ func (s *WorkerService) AddPayment(ctx context.Context, payment model.Payment) (
 	httpClient := go_core_api.HttpClient {
 		Url: 	s.apiService[1].Url + "/addPayment",
 		Method: s.apiService[1].Method,
-		Timeout: 15,
+		Timeout: s.apiService[1].HttpTimeout,
 		Headers: &headers,
 	}
 
@@ -248,7 +248,7 @@ func (s *WorkerService) PixTransaction(ctx context.Context, pixTransaction model
 	httpClient := go_core_api.HttpClient {
 		Url: 	s.apiService[1].Url + "/pixTransaction",
 		Method: s.apiService[1].Method,
-		Timeout: 15,
+		Timeout: s.apiService[1].HttpTimeout,
 		Headers: &headers,
 	}
 

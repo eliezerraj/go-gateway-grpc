@@ -14,7 +14,7 @@ data:
   DB_NAME: "postgres"
   DB_SCHEMA: "public"
   DB_DRIVER: "postgres"
-  DB_MAX_CONNECTION: "80"
+  DB_MAX_CONNECTION: "8"
   CTX_TIMEOUT: "5"
   SETPOD_AZ: "false"
   ENV: "dev"
@@ -31,3 +31,4 @@ data:
   URL_SERVICE_01: "https://nlb-eks-arch-01-02.architecture.caradhras.io"
   METHOD_SERVICE_01: "POST"
   HOST_SERVICE_01: "go-payment-gateway.architecture.caradhras.io"
+  CLIENT_HTTP_TIMEOUT_01: "5"
