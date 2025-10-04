@@ -2,12 +2,7 @@ SHELL=/bin/bash
 
 # Define environment variables
 
-export AUTH_TOKEN=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJpc3MiOiJnby1vYXV0aC1sYW1iZGEiLCJ2ZXJzaW9uIjoiMi4xIiwiand0X2lkIjoiOGIxY2IwYzUtNDE1Mi00YzMxLWE0ZGUtNDY5ZGQzZGEzZGE0IiwidXNlcm5hbWUiOiJ1c2VyLTAzIiwidGllciI6InRpZXItMDMiLCJhcGlfYWNjZXNzX2tleSI6IkFQSV9BQ0NFU1NfS0VZX1VTRVJfMDMiLCJzY29wZSI6WyJ0ZXN0LnJlYWQiLCJ0ZXN0LndyaXRlIiwiYWRtaW4iXSwiZXhwIjoxNzU2NDExODU1fQ.RIsPIGoxPH3dGbYHqYsNXXupJuvGs80RC1veL5vHDfmW3ZUgqqgzF6EUylyX0iHtqFFYjHeiHdODC5beZYmswlY1zNzxPOM9rmyxGUY7E6zO4uofsNSMQWHj3_bCrrJzE0uJTBIkshp39us-ru6aufF2q5XG3a_HyudV5AjR5s-fW0CmWD0Q7qflganXYus4Bf9IipDLM1GurFYpGArRV0Z91Bt51bMlwSpxfzprZ2J7IaNN84y4VuiCSAlfytSObrZt5V4EiTGldCcgvbGqWTKVEGwxOhEZbur8lVH9806eIfRdk_0vwMvLTEwbfyzVhMpRrLw79FZle1okbpKaPJT1vTTDyijuG3vGzXUsHe2SdCi2sl6Xy2ineFukKuzO4csiB3V-kaYztjhNxKkGUKTJIBIokhWvZ2YbOtTMOO2nfL2CgjynL-MSxt7o8PlIj03U5Hsjb5Rkmkk76FWAYI0g8gKMnqfm4t9wXQ27rRWsnbrba6enR58MWhgmFyBbwfsqTyYtp_MvFmFMmxtWMcMbVFm3Rc3nf1AUBEK6VxMmsftjG7X_YrT-qtdQlVC5wn0Tzqwup5hs_DyIxQmmEVoVI7ZUKGsOL6u71Q24vwHmjmtOlEmvYhJimzqbq6U7bw-oyDSK8r0BXZJaP9v9djF_j3tUOJ-DjHXzpRMwIe8
-
-#export URL_POST_PIX=https://go-global.architecture.caradhras.io/gateway-grpc/pixTransaction
-#export URL_POST_PAYMENT=https://go-global.architecture.caradhras.io/gateway-grpc/payment
-#export URL_POST_TOKEN=https://go-global.architecture.caradhras.io/gateway-grpc/paymentToken
-
+export AUTH_TOKEN=
 # Default target
 all: env
 
@@ -32,6 +27,8 @@ load_all:
 		echo "--- CARD (card/cardToken) ---"; \
 		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/card_dynamic_v2.sh"; \
 	done
+
+	echo "****** FIM DO PROCESSO ******"; \
 
 load_pix:
 	@echo "Run load pixTransaction ..."

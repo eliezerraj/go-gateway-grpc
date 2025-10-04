@@ -20,17 +20,19 @@ import (
 	go_core_observ "github.com/eliezerraj/go-core/observability"
 )
 
-var childLogger = log.With().Str("component", "go-gateway-grpc").Str("package", "internal.adapter.api").Logger()
-
-var core_json coreJson.CoreJson
-var core_apiError coreJson.APIError
-var tracerProvider go_core_observ.TracerProvider
+var (
+	childLogger = log.With().Str("component", "go-gateway-grpc").Str("package", "internal.adapter.api").Logger()
+	core_json coreJson.CoreJson
+	core_apiError coreJson.APIError
+	tracerProvider go_core_observ.TracerProvider
+)
 
 type HttpRouters struct {
 	workerService 	*service.WorkerService
 	ctxTimeout		time.Duration
 }
 
+// About create a new instance of HttpRouters
 func NewHttpRouters(workerService *service.WorkerService,
 					ctxTimeout	time.Duration) HttpRouters {
 	childLogger.Info().Str("func","NewHttpRouters").Send()
