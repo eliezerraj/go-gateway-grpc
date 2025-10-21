@@ -3,6 +3,7 @@ SHELL=/bin/bash
 # Define environment variables
 
 export AUTH_TOKEN=
+
 # Default target
 all: env
 
@@ -16,16 +17,16 @@ load_all:
 	@echo "Run load all ..."
 
 	@for ((i=0; i<=1000000; i++)); do \
-		echo "--- LEDGER (ledger/movimentStatement) ---"; \
-		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/ledger_dynamic_v2.sh"; \
-		echo "--- PIX (gateway-grpc/pixTransaction) ---"; \
-		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/pix_dynamic_v2.sh"; \
-		echo "--- PAYMENT (gateway-grpc/payment) ---"; \
-		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/payment_dynamic_v2.sh"; \
-		echo "--- TOKEN (gateway-grpc/paymentToken) ---"; \
-		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/token_dynamic_v2.sh"; \
-		echo "--- CARD (card/cardToken) ---"; \
-		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/card_dynamic_v2.sh"; \
+		echo "--- 01 LEDGER (arch) ---"; \
+		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/01_ledger_v1.sh"; \
+		echo "--- 02 ACCOUNT (arch) ---"; \
+		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/02_account_v1.sh"; \
+		echo "--- 03 CARD (arch-02)---"; \
+		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/03_card_v1.sh"; \
+		echo "--- 04 PAYMENT (arch)---"; \
+		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/04_payment_v1.sh"; \
+		echo "--- 05 GATEWAY (arch)---"; \
+		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/05_gateway_grpc_v1.sh"; \
 	done
 
 	echo "****** FIM DO PROCESSO ******"; \

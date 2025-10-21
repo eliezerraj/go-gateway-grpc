@@ -23,6 +23,9 @@ else
   echo "ERROR ====> $STATUS_CODE"
 fi
 
+RANDOM_FROM=$((RANDOM % 999 + 1))
+RANDOM_TO=$((RANDOM % 999 + 1))
+RANDOM_PRICE=$((RANDOM % 300 + 100))
 STATUS_CODE=$(curl -s -w " HTTP:%{http_code}" "$URL_POST" \
 	--header "Content-Type: application/json" \
 	--header "Authorization: $AUTH_TOKEN" \
@@ -34,6 +37,9 @@ else
   echo "ERROR ====> $STATUS_CODE"
 fi
 
+RANDOM_FROM=$((RANDOM % 999 + 1))
+RANDOM_TO=$((RANDOM % 999 + 1))
+RANDOM_PRICE=$((RANDOM % 300 + 100))
 STATUS_CODE=$(curl -s -w " HTTP:%{http_code}" "$URL_POST" \
 	--header "Content-Type: application/json" \
 	--header "Authorization: $AUTH_TOKEN" \
@@ -45,6 +51,9 @@ else
   echo "ERROR ====> $STATUS_CODE"
 fi
 
+RANDOM_FROM=$((RANDOM % 999 + 1))
+RANDOM_TO=$((RANDOM % 999 + 1))
+RANDOM_PRICE=$((RANDOM % 300 + 100))
 STATUS_CODE=$(curl -s -w " HTTP:%{http_code}" "$URL_POST" \
 	--header "Content-Type: application/json" \
 	--header "Authorization: $AUTH_TOKEN" \
@@ -56,6 +65,9 @@ else
   echo "ERROR ====> $STATUS_CODE"
 fi
 
+RANDOM_FROM=$((RANDOM % 999 + 1))
+RANDOM_TO=$((RANDOM % 999 + 1))
+RANDOM_PRICE=$((RANDOM % 300 + 100))
 STATUS_CODE=$(curl -s -w " HTTP:%{http_code}" "$URL_POST" \
 	--header "Content-Type: application/json" \
 	--header "Authorization: $AUTH_TOKEN" \
