@@ -15,7 +15,7 @@ import(
 	"github.com/rs/zerolog/log"
 	"github.com/sony/gobreaker"
 
-	adapter_grpc 	"github.com/go-gateway-grpc/internal/adapter/grpc/client"
+	adapter_grpc "github.com/go-gateway-grpc/internal/adapter/grpc/client"
 	
 	go_core_grpc_client_worker "github.com/eliezerraj/go-core/grpc"
 	go_core_pg 	"github.com/eliezerraj/go-core/database/pg"
@@ -106,10 +106,7 @@ func (s *WorkerService) GetInfoPodGrpc(ctx context.Context) (*model.InfoPod, err
 
 	// Check if grpc server is OK
 	_, err := s.circuitBreaker.Execute(func() (interface{}, error) {
-		if s.adapaterGrpc.GrpcClientWorker == nil {
-			return nil, erro.ErroGrpcServerNill
-		}
-		err := s.adapaterGrpc.GrpcClientWorker.TestConnection(ctx)
+		err := s.adapaterGrpc.TestConnection(ctx)
 		if err != nil {
 			return nil, erro.ErroGrpcServer
 		}
@@ -140,10 +137,7 @@ func (s *WorkerService) AddPaymentToken(ctx context.Context, payment model.Payme
 
 	// Check if grpc server is OK
 	_, err := s.circuitBreaker.Execute(func() (interface{}, error) {
-		if s.adapaterGrpc.GrpcClientWorker == nil {
-			return nil, erro.ErroGrpcServerNill
-		}
-		err := s.adapaterGrpc.GrpcClientWorker.TestConnection(ctx)
+		err := s.adapaterGrpc.TestConnection(ctx)
 		if err != nil {
 			return nil, erro.ErroGrpcServer
 		}

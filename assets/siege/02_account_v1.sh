@@ -49,8 +49,7 @@ fi
 RANDOM_TENANT=$((RANDOM % 999 + 1))
 
 URL_POST="${URL_HOST}/account/update/ACC-${RANDOM_ACC}"
-PAYLOAD='{"tenant_id": "TENANT-SIEGE-'$RANDOM_TENANT'"}'
-#echo $URL_POST
+PAYLOAD='{"person_id": "P-'$RANDOM_ACC'" ,"user_last_update": "SIEGE" ,"tenant_id": "TENANT-SIEGE-'$RANDOM_ACC'"}'
 #echo $PAYLOAD
 
 STATUS_CODE=$(curl -s -w " HTTP:%{http_code}" "$URL_POST" \
