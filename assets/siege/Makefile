@@ -2,7 +2,8 @@ SHELL=/bin/bash
 
 # Define environment variables
 
-export AUTH_TOKEN=
+export AUTH_TOKEN=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJpc3MiOiJnby1vYXV0aC1sYW1iZGEiLCJ2ZXJzaW9uIjoiMi4yIiwiand0X2lkIjoiNDE5NjUzZTUtNzUwMC00YTZmLWJmNmItOGQwZmJlZjI3ZjhjIiwidXNlcm5hbWUiOiJ1c2VyLTAzIiwidGllciI6InRpZXItMDMiLCJhcGlfYWNjZXNzX2tleSI6IkFQSV9BQ0NFU1NfS0VZX1VTRVJfMDMiLCJzY29wZSI6WyJ0ZXN0LnJlYWQiLCJ0ZXN0LndyaXRlIiwiYWRtaW4iXSwiZXhwIjoxNzYxODY3NjA0fQ.X5UgVGcx0-_ZtjBRPRN24q5cWbVf-rybIQUQR7rn6KIzuOmDk0r4uM_yDqdh7Yz8bUg7mnTZ4DHKqx7QWdNHlmVn0I1uj2NFrLgNrnpvJv1PD98T8HIxqUEf0ZYsMvi_R1V8MUQgxlnxT5YQi8GH3-ZanxOG9RpSJZgso1r-VW9Fdx4XVQGrWkcOjKFkrr0ceubRaVWLzX3hSU8XVU2DXkFRQylOKx2PjPIZN5sILGlfi6ASz7wf8Llvg3MJMJ90AE-8kV3A841MUCBrvDxF91lYRjIBzvo5DTuSejwqsEREh5iwf1PSbnYakyNfy8QEQWnCFEOBj0uybU8SesAOnF9FFDNLhksB-cE0NbvDJ1zUGhnGbhWG8opySJ05QmKEwSarGkksAn_omvM4Cqt3FpujX6o-SlUoICD3oGxLO8O_FT2YCdgl4A5d_A3M45ad7efOM-9HIojEtfqBAwi2uP9SiAsEFZrCigGz13eX9dClRm7CN3loGmXZA6g0bHKTx1bj4eymyFwRB1EURfzyHzoouKi6qqlFTEgC9SB8CmK_fZKROqoK4PUcTCSnJahZZ5YTxFMQY0zZL3_t8nvzyX88BEcoPBowdbLVcKhwclYj0DF3JS1vAOWExabdwr0b2ORFrFx-oxl9qknFXM_z6AhpWr7wcVmns7xh3fgmyiM
+
 # Default target
 all: env
 
@@ -16,16 +17,16 @@ load_all:
 	@echo "Run load all ..."
 
 	@for ((i=0; i<=1000000; i++)); do \
-		echo "--- LEDGER (ledger/movimentStatement) ---"; \
-		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/ledger_dynamic_v2.sh"; \
-		echo "--- PIX (gateway-grpc/pixTransaction) ---"; \
-		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/pix_dynamic_v2.sh"; \
-		echo "--- PAYMENT (gateway-grpc/payment) ---"; \
-		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/payment_dynamic_v2.sh"; \
-		echo "--- TOKEN (gateway-grpc/paymentToken) ---"; \
-		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/token_dynamic_v2.sh"; \
-		echo "--- CARD (card/cardToken) ---"; \
-		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/card_dynamic_v2.sh"; \
+		echo "--- 01 LEDGER (arch) ---"; \
+		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/01_ledger_v1.sh"; \
+		echo "--- 02 ACCOUNT (arch) ---"; \
+		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/02_account_v1.sh"; \
+		echo "--- 03 CARD (arch-02)---"; \
+		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/03_card_v1.sh"; \
+		echo "--- 04 PAYMENT (arch)---"; \
+		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/04_payment_v1.sh"; \
+		echo "--- 05 GATEWAY (arch)---"; \
+		"/mnt/c/Eliezer/workspace/github.com/go-gateway-grpc/assets/siege/05_gateway_grpc_v1.sh"; \
 	done
 
 	echo "****** FIM DO PROCESSO ******"; \
