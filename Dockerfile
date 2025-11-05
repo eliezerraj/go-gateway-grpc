@@ -1,7 +1,7 @@
 #docker build -t go-gateway-grpc .
 #docker run -dit --name go-gateway-grpc -p 6000:6000 go-gateway-grpc sleep infinity
 
-FROM golang:1.23.3 As builder
+FROM golang:1.24 As builder
 
 RUN apt-get update && apt-get install bash && apt-get install -y --no-install-recommends ca-certificates
 
