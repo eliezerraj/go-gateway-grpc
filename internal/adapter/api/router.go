@@ -108,7 +108,7 @@ func (h *HttpRouters) GetInfoPodGrpc(rw http.ResponseWriter, req *http.Request) 
     defer cancel()
 
 	// Trace
-	span := tracerProvider.Span(ctx, "adapter.api.GetInfoPodGrpc")
+	ctx, span := tracerProvider.SpanCtx(ctx, "adapter.api.GetInfoPodGrpc")
 	defer span.End()
 
 	trace_id := fmt.Sprintf("%v", ctx.Value("trace-request-id"))
@@ -129,7 +129,7 @@ func (h *HttpRouters) AddPaymentToken(rw http.ResponseWriter, req *http.Request)
 	ctx, cancel := context.WithTimeout(req.Context(), h.ctxTimeout * time.Second)
     defer cancel()
 
-	span := tracerProvider.Span(ctx, "adapter.api.AddPaymentToken")
+	ctx, span := tracerProvider.SpanCtx(ctx, "adapter.api.AddPaymentToken")
 	defer span.End()
 
 	trace_id := fmt.Sprintf("%v", ctx.Value("trace-request-id"))
@@ -156,7 +156,7 @@ func (h *HttpRouters) AddPayment(rw http.ResponseWriter, req *http.Request) erro
 	ctx, cancel := context.WithTimeout(req.Context(), h.ctxTimeout * time.Second)
     defer cancel()
 
-	span := tracerProvider.Span(ctx, "adapter.api.AddPayment")
+	ctx, span := tracerProvider.SpanCtx(ctx, "adapter.api.AddPayment")
 	defer span.End()
 
 	trace_id := fmt.Sprintf("%v", ctx.Value("trace-request-id"))
@@ -183,7 +183,7 @@ func (h *HttpRouters) PixTransaction(rw http.ResponseWriter, req *http.Request) 
 	ctx, cancel := context.WithTimeout(req.Context(), h.ctxTimeout * time.Second)
     defer cancel()
 
-	span := tracerProvider.Span(ctx, "adapter.api.PixTransaction")
+	ctx, span := tracerProvider.SpanCtx(ctx, "adapter.api.PixTransaction")
 	defer span.End()
 
 	trace_id := fmt.Sprintf("%v", ctx.Value("trace-request-id"))

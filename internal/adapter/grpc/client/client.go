@@ -53,7 +53,7 @@ func (a *AdapaterGrpc) GetInfoPodGrpc(ctx context.Context) (*model.InfoPod, erro
 	childLogger.Info().Str("func","GetInfoPodGrpc").Interface("trace-request-id", ctx.Value("trace-request-id")).Send()
 
 	// Trace
-	span := tracerProvider.Span(ctx, "adapter.grpc.client.GetInfoPodGrpc")
+	ctx, span := tracerProvider.SpanCtx(ctx, "adapter.grpc.client.GetInfoPodGrpc")
 	defer span.End()
 		
 	// Prepare to receive proto data
@@ -100,7 +100,7 @@ func (a *AdapaterGrpc) AddPaymentTokenGrpc(ctx context.Context, payment model.Pa
 	childLogger.Info().Str("func","AddPaymentTokenGrpc").Interface("trace-request-id", ctx.Value("trace-request-id")).Interface("payment",payment).Send()
 
 	// Trace
-	span := tracerProvider.Span(ctx, "adapter.grpc.client.AddPaymentTokenGrpc")
+	ctx, span := tracerProvider.SpanCtx(ctx, "adapter.grpc.client.AddPaymentTokenGrpc")
 	defer span.End()
 
 	// Set header for observability
@@ -173,7 +173,7 @@ func (a *AdapaterGrpc) TestConnection(ctx context.Context) (error){
 	childLogger.Info().Str("func","TestConnection").Interface("trace-request-id", ctx.Value("trace-request-id")).Send()
 
 	// Trace
-	span := tracerProvider.Span(ctx, "adapter.grpc.client.TestConnection")
+	ctx, span := tracerProvider.SpanCtx(ctx, "adapter.grpc.client.TestConnection")
 	defer span.End()
 
 	// Set header for trace-id

@@ -101,7 +101,7 @@ func (s *WorkerService) GetInfoPodGrpc(ctx context.Context) (*model.InfoPod, err
 	childLogger.Info().Str("func","GetInfoPodGrpc").Interface("trace-request-id", ctx.Value("trace-request-id")).Send()
 
 	// Trace
-	span := tracerProvider.Span(ctx, "service.GetInfoPodGrpc")
+	ctx, span := tracerProvider.SpanCtx(ctx, "service.GetInfoPodGrpc")
 	defer span.End()
 
 	// Check if grpc server is OK
@@ -132,7 +132,7 @@ func (s *WorkerService) AddPaymentToken(ctx context.Context, payment model.Payme
 	childLogger.Info().Str("func","AddPaymentToken").Interface("trace-request-id", ctx.Value("trace-request-id")).Interface("payment", payment).Send()
 
 	// Trace
-	span := tracerProvider.Span(ctx, "service.AddPaymentToken")
+	ctx, span := tracerProvider.SpanCtx(ctx, "service.AddPaymentToken")
 	span.End()
 
 	// Check if grpc server is OK
@@ -170,7 +170,7 @@ func (s *WorkerService) AddPayment(ctx context.Context, payment model.Payment) (
 	childLogger.Info().Str("func","AddPayment").Interface("trace-request-id", ctx.Value("trace-request-id")).Interface("payment", payment).Send()
 
 	// Trace
-	span := tracerProvider.Span(ctx, "service.AddPayment")
+	ctx, span := tracerProvider.SpanCtx(ctx, "service.AddPayment")
 	span.End()
 
 	trace_id := fmt.Sprintf("%v",ctx.Value("trace-request-id"))
@@ -220,7 +220,7 @@ func (s *WorkerService) PixTransaction(ctx context.Context, pixTransaction model
 	childLogger.Info().Str("func","PixTransaction").Interface("trace-request-id", ctx.Value("trace-request-id")).Interface("pixTransaction", pixTransaction).Send()
 
 	// Trace
-	span := tracerProvider.Span(ctx, "service.PixTransaction")
+	ctx, span := tracerProvider.SpanCtx(ctx, "service.PixTransaction")
 	span.End()
 
 	trace_id := fmt.Sprintf("%v",ctx.Value("trace-request-id"))
