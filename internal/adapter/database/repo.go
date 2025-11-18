@@ -59,6 +59,7 @@ func (w WorkerRepository) GetTransactionUUID(ctx context.Context) (*string, erro
 
 	conn, err := w.DatabasePGServer.Acquire(ctx)
 	if err != nil {
+		childLogger.Error().Err(err).Send()
 		return nil, errors.New(err.Error())
 	}
 	defer w.DatabasePGServer.Release(conn)
@@ -71,6 +72,7 @@ func (w WorkerRepository) GetTransactionUUID(ctx context.Context) (*string, erro
 
 	rows, err := conn.Query(ctx, query)
 	if err != nil {
+		childLogger.Error().Err(err).Send()
 		return nil, errors.New(err.Error())
 	}
 	defer rows.Close()
@@ -78,6 +80,7 @@ func (w WorkerRepository) GetTransactionUUID(ctx context.Context) (*string, erro
 	for rows.Next() {
 		err := rows.Scan(&uuid) 
 		if err != nil {
+			childLogger.Error().Err(err).Send()
 			return nil, errors.New(err.Error())
         }
 		return &uuid, nil
